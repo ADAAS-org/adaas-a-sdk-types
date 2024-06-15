@@ -57,12 +57,15 @@ export type A_SDK_TYPES__UnionToIntersection<U> =
 export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SDK_TYPES__UnionToIntersection<
     {
         [K in keyof T]: T[K] extends `${infer Key}.${infer Rest}`
-        ? { [P in Key]: A_SDK_TYPES__PathsToObject<T[K], [Rest]> }
+        ? { [P in Key]: P extends keyof _Obj
+            ? A_SDK_TYPES__PathsToObject<_Obj[P], [Rest]>
+            : any
+
+        }
         : { [P in T[K]]:
-            T[K] extends keyof _Obj ? _Obj[T[K]] : any
+            P extends keyof Required<_Obj> ? _Obj[P] : any
         };
     }[number]
 >;
 
 export type A_SDK_TYPES__Required<T, arr extends (A_SDK_TYPES__Paths<T>)[] = (A_SDK_TYPES__Paths<T>)[]> = A_SDK_TYPES__PathsToObject<T, arr> & T;
-
