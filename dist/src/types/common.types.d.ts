@@ -22,10 +22,10 @@ export type A_AUTH_RequestParam = {
     value: string;
 };
 export type A_SDK_TYPES__DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? A_SDK_TYPES__DeepPartial<T[P]> : T[P];
+    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__DeepPartial<T[P]> : T[P];
 };
 export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
-    [P in keyof T]?: T[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
+    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
 };
 export type A_SDK_TYPES__Dictionary<T> = {
     [Key: string]: T;
@@ -36,9 +36,9 @@ export type A_SDK_TYPES__Paths<T> = T extends object ? {
 export type A_SDK_TYPES__UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SDK_TYPES__UnionToIntersection<{
     [K in keyof T]: T[K] extends `${infer Key}.${infer Rest}` ? {
-        [P in Key]: P extends keyof _Obj ? A_SDK_TYPES__PathsToObject<_Obj[P], [Rest]> : any;
+        [P in Key]: P extends keyof _Obj ? A_SDK_TYPES__PathsToObject<Required<_Obj>[P], [Rest]> : any;
     } : {
-        [P in T[K]]: P extends keyof Required<_Obj> ? _Obj[P] : any;
+        [P in T[K]]: `${T[K]}` extends keyof Required<_Obj> ? Required<_Obj>[`${T[K]}`] : never;
     };
 }[number]>;
 export type A_SDK_TYPES__Required<T, arr extends (A_SDK_TYPES__Paths<T>)[] = (A_SDK_TYPES__Paths<T>)[]> = A_SDK_TYPES__PathsToObject<T, arr> & T;

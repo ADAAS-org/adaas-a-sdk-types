@@ -31,11 +31,11 @@ export type A_AUTH_RequestParam = {
 // =======================================================
 
 export type A_SDK_TYPES__DeepPartial<T> = {
-    [P in keyof T]?: T[P] extends object ? A_SDK_TYPES__DeepPartial<T[P]> : T[P];
+    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__DeepPartial<T[P]> : T[P];
 };
 
 export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
-    [P in keyof T]?: T[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
+    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
 };
 
 
@@ -58,12 +58,12 @@ export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SD
     {
         [K in keyof T]: T[K] extends `${infer Key}.${infer Rest}`
         ? { [P in Key]: P extends keyof _Obj
-            ? A_SDK_TYPES__PathsToObject<_Obj[P], [Rest]>
+            ? A_SDK_TYPES__PathsToObject<Required<_Obj>[P], [Rest]>
             : any
 
         }
         : { [P in T[K]]:
-            P extends keyof Required<_Obj> ? _Obj[P] : any
+            `${T[K]}` extends keyof Required<_Obj> ? Required<_Obj>[`${T[K]}`] : never
         };
     }[number]
 >;
