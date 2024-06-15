@@ -42,3 +42,27 @@ export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
 export type A_SDK_TYPES__Dictionary<T> = {
     [Key: string]: T;
 }
+
+
+
+
+export type A_SDK_TYPES__Paths<T> = T extends object ? { [K in keyof T]:
+    `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K]>}`}`
+}[keyof T] : never
+
+export type A_SDK_TYPES__UnionToIntersection<U> =
+    (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
+
+
+export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SDK_TYPES__UnionToIntersection<
+    {
+        [K in keyof T]: T[K] extends `${infer Key}.${infer Rest}`
+        ? { [P in Key]: A_SDK_TYPES__PathsToObject<T[K], [Rest]> }
+        : { [P in T[K]]:
+            T[K] extends keyof _Obj ? _Obj[T[K]] : any
+        };
+    }[number]
+>;
+
+export type A_SDK_TYPES__Required<T, arr extends (A_SDK_TYPES__Paths<T>)[] = (A_SDK_TYPES__Paths<T>)[]> = A_SDK_TYPES__PathsToObject<T, arr> & T;
+
