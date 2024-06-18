@@ -14,4 +14,19 @@ export declare class A_Entity<_NewType = any, _SerializedType extends A_SDK_TYPE
      */
     aseid: string;
     constructor(aseidOrEntity?: string | _SerializedType | _NewType);
+    /**
+     * Extracts the ID from the ASEID
+     * ID is the unique identifier of the entity
+     */
+    get id(): number | string;
+    /**
+     * Extracts the namespace from the ASEID
+     * namespace is an application specific identifier from where the entity is coming from
+     */
+    get namespace(): string;
+    /**
+     * Extracts the entity from the ASEID
+     * entity is the name of the entity from Application Namespace
+     */
+    get entity(): string;
 }

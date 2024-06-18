@@ -48,21 +48,17 @@ class A_SDK_CommonHelper {
     }
     static generateASEID(props) {
         const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
-        return `${namespace}@${props.entity}:${this.formatWithLeadingZeros(props.id)}`;
+        return `${namespace}@${props.entity}:${typeof props.id === 'number'
+            ? this.formatWithLeadingZeros(props.id)
+            : props.id}`;
     }
     static extractASEID(identity) {
         const [namespace, entity, id] = identity.split('@')[1].split(':');
         return {
             namespace,
             entity,
-            id: parseInt(id)
+            id: isNaN(parseInt(id)) ? id : parseInt(id)
         };
-    }
-    static extractIdFromIdentity(identity) {
-        return parseInt(identity.split(':')[1]);
-    }
-    static generateIdentity(name, id) {
-        return `${name}:${this.formatWithLeadingZeros(id)}`;
     }
 }
 exports.A_SDK_CommonHelper = A_SDK_CommonHelper;

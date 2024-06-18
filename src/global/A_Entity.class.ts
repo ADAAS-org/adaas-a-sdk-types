@@ -1,3 +1,4 @@
+import { A_SDK_CommonHelper } from "../helpers/Common.helper";
 import { A_SDK_TYPES__IAEntity } from "../types/A_Entity.types";
 
 export class A_Entity<
@@ -5,6 +6,8 @@ export class A_Entity<
     _SerializedType extends A_SDK_TYPES__IAEntity = A_SDK_TYPES__IAEntity,
 >
     implements A_SDK_TYPES__IAEntity {
+
+
     /**
      *  A - ADAAS
      *  S - System 
@@ -27,5 +30,32 @@ export class A_Entity<
                 this.aseid = (aseidOrEntity as _SerializedType).aseid;
             }
         }
+    }
+
+    /**
+     * Extracts the ID from the ASEID
+     * ID is the unique identifier of the entity
+     */
+    get id(): number | string {
+        const { id } = A_SDK_CommonHelper.extractASEID(this.aseid);
+        return id;
+    }
+
+    /**
+     * Extracts the namespace from the ASEID
+     * namespace is an application specific identifier from where the entity is coming from
+     */
+    get namespace(): string {
+        const { namespace } = A_SDK_CommonHelper.extractASEID(this.aseid);
+        return namespace;
+    }
+
+    /**
+     * Extracts the entity from the ASEID
+     * entity is the name of the entity from Application Namespace
+     */
+    get entity(): string {
+        const { entity } = A_SDK_CommonHelper.extractASEID(this.aseid);
+        return entity;
     }
 }

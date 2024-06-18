@@ -9,13 +9,11 @@ export declare class A_SDK_CommonHelper {
     static generateASEID(props: {
         namespace?: string;
         entity: string;
-        id: number;
+        id: number | string;
     }): string;
     static extractASEID(identity: string): {
         namespace: string;
         entity: string;
-        id: number;
+        id: number | string;
     };
-    static extractIdFromIdentity(identity: string): number;
-    static generateIdentity(name: string, id: number): string;
 }

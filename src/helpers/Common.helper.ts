@@ -70,35 +70,27 @@ export class A_SDK_CommonHelper {
     static generateASEID(props: {
         namespace?: string,
         entity: string
-        id: number
+        id: number | string
     }): string {
         const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
 
-        return `${namespace}@${props.entity}:${this.formatWithLeadingZeros(props.id)}`;
+        return `${namespace}@${props.entity}:${typeof props.id === 'number'
+            ? this.formatWithLeadingZeros(props.id)
+            : props.id
+            }`;
     }
 
 
     static extractASEID(identity: string): {
         namespace: string,
         entity: string
-        id: number
+        id: number | string
     } {
         const [namespace, entity, id] = identity.split('@')[1].split(':');
         return {
             namespace,
             entity,
-            id: parseInt(id)
+            id: isNaN(parseInt(id)) ? id : parseInt(id)
         }
     }
-
-
-
-    static extractIdFromIdentity(identity: string): number {
-        return parseInt(identity.split(':')[1]);
-    }
-
-    static generateIdentity(name: string, id: number): string {
-        return `${name}:${this.formatWithLeadingZeros(id)}`;
-    }
-
 }
