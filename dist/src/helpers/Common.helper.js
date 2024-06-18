@@ -46,6 +46,18 @@ class A_SDK_CommonHelper {
     static removeLeadingZeros(formattedNumber) {
         return String(Number(formattedNumber)); // Convert to number and back to string to remove leading zeros
     }
+    static generateASEID(props) {
+        const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
+        return `${namespace}@${props.entity}:${this.formatWithLeadingZeros(props.id)}`;
+    }
+    static extractASEID(identity) {
+        const [namespace, entity, id] = identity.split('@')[1].split(':');
+        return {
+            namespace,
+            entity,
+            id: parseInt(id)
+        };
+    }
     static extractIdFromIdentity(identity) {
         return parseInt(identity.split(':')[1]);
     }

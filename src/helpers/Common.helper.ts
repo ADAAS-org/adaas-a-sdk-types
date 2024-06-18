@@ -67,6 +67,32 @@ export class A_SDK_CommonHelper {
     }
 
 
+    static generateASEID(props: {
+        namespace?: string,
+        entity: string
+        id: number
+    }): string {
+        const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
+
+        return `${namespace}@${props.entity}:${this.formatWithLeadingZeros(props.id)}`;
+    }
+
+
+    static extractASEID(identity: string): {
+        namespace: string,
+        entity: string
+        id: number
+    } {
+        const [namespace, entity, id] = identity.split('@')[1].split(':');
+        return {
+            namespace,
+            entity,
+            id: parseInt(id)
+        }
+    }
+
+
+
     static extractIdFromIdentity(identity: string): number {
         return parseInt(identity.split(':')[1]);
     }

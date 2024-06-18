@@ -10,4 +10,12 @@ export {
     A_SDK_TYPES__ObjectKeyEnum
 } from './src/types/common.types';
 
-export { A_SDK_TYPES__IDefaultPagination, A_SDK_TYPES__IRequestFilter, A_SDK_TYPES__IRequestPagination } from './src/types/A_SDK_ApiProvider.types';
+export {
+    A_SDK_TYPES__IAEntity
+} from './src/types/A_Entity.types';
+
+export {
+    A_SDK_TYPES__IDefaultPagination,
+    A_SDK_TYPES__IRequestFilter,
+    A_SDK_TYPES__IRequestPagination
+} from './src/types/A_SDK_ApiProvider.types';
