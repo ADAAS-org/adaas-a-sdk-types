@@ -25,7 +25,13 @@ export class A_SDK_CommonHelper {
     }
 
 
-
+    /**
+     *  Omit properties from an object or array with nested objects
+     * 
+     * @param input 
+     * @param paths 
+     * @returns 
+     */
     static omitProperties<T, S extends string>(
         input: T,
         paths: string[]
@@ -57,16 +63,32 @@ export class A_SDK_CommonHelper {
     }
 
 
+    /**
+     *  Format a number with leading zeros to a fixed length
+     * 
+     * @param number 
+     * @param maxZeros 
+     * @returns 
+     */
     static formatWithLeadingZeros(number, maxZeros = 10) {
         const formattedNumber = String(number).padStart(maxZeros + 1, '0');
         return formattedNumber.slice(-maxZeros);
     }
 
+    /**
+     * Remove leading zeros from a formatted number
+     */
     static removeLeadingZeros(formattedNumber) {
         return String(Number(formattedNumber)); // Convert to number and back to string to remove leading zeros
     }
 
 
+    /**
+     * Generate an ASEID from a namespace, entity, and id
+     * 
+     * @param props 
+     * @returns 
+     */
     static generateASEID(props: {
         namespace?: string,
         entity: string
@@ -81,6 +103,12 @@ export class A_SDK_CommonHelper {
     }
 
 
+    /**
+     * Extract namespace, entity, and id from an ASEID
+     * 
+     * @param identity 
+     * @returns 
+     */
     static extractASEID(identity: string): {
         namespace: string,
         entity: string

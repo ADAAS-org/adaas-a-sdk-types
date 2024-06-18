@@ -17,6 +17,13 @@ class A_SDK_CommonHelper {
         // Replace all matched tags with an empty string
         return html.replace(regex, '');
     }
+    /**
+     *  Omit properties from an object or array with nested objects
+     *
+     * @param input
+     * @param paths
+     * @returns
+     */
     static omitProperties(input, paths) {
         // Deep clone the input object or array
         const result = JSON.parse(JSON.stringify(input));
@@ -39,19 +46,41 @@ class A_SDK_CommonHelper {
         });
         return result;
     }
+    /**
+     *  Format a number with leading zeros to a fixed length
+     *
+     * @param number
+     * @param maxZeros
+     * @returns
+     */
     static formatWithLeadingZeros(number, maxZeros = 10) {
         const formattedNumber = String(number).padStart(maxZeros + 1, '0');
         return formattedNumber.slice(-maxZeros);
     }
+    /**
+     * Remove leading zeros from a formatted number
+     */
     static removeLeadingZeros(formattedNumber) {
         return String(Number(formattedNumber)); // Convert to number and back to string to remove leading zeros
     }
+    /**
+     * Generate an ASEID from a namespace, entity, and id
+     *
+     * @param props
+     * @returns
+     */
     static generateASEID(props) {
         const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
         return `${namespace}@${props.entity}:${typeof props.id === 'number'
             ? this.formatWithLeadingZeros(props.id)
             : props.id}`;
     }
+    /**
+     * Extract namespace, entity, and id from an ASEID
+     *
+     * @param identity
+     * @returns
+     */
     static extractASEID(identity) {
         const [namespace, entity, id] = identity.split('@')[1].split(':');
         return {
