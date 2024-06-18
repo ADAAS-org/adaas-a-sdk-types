@@ -3,6 +3,9 @@ export { A_SDK_CommonHelper } from './src/helpers/Common.helper';
 export { A_SDK_ServerError } from './src/global/A_SDK_ServerError.class';
 export { A_SDK_ErrorsProvider } from './src/global/A_SDK_ErrorsProvider.class';
 export { A_SDK_Error } from './src/global/A_SDK_Error.class';
+export { A_Entity } from './src/global/A_Entity.class';
+
+
 export { A_SDK_CONSTANTS__ERROR_CODES } from './src/constants/errors.constants';
 export {
     A_SDK_TYPES__DeepPartial,
