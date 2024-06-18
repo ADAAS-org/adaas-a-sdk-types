@@ -10,7 +10,12 @@ export { A_SDK_CONSTANTS__ERROR_CODES } from './src/constants/errors.constants';
 export {
     A_SDK_TYPES__DeepPartial,
     A_SDK_TYPES__Dictionary,
-    A_SDK_TYPES__ObjectKeyEnum
+    A_SDK_TYPES__ObjectKeyEnum,
+    A_SDK_TYPES__Required,
+    A_SDK_TYPES__Paths,
+    A_SDK_TYPES__PathsToObject,
+    A_SDK_TYPES__UnionToIntersection
+
 } from './src/types/common.types';
 
 export {
