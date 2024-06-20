@@ -95,15 +95,18 @@ export class A_SDK_CommonHelper {
          * generally it is the application name or code, should correspond to the namespace of the application
          */
         namespace?: string,
+
         /**
          * Entity Scope the primary location of the resource 
          * Organization, or organization Unit
          */
         scope: number | string
+
         /**
          * Entity Type the type of the resource
          */
         entity: string
+
         /**
          * Entity ID the unique identifier of the resource
          */
@@ -143,7 +146,7 @@ export class A_SDK_CommonHelper {
          * Entity Scope the primary location of the resource
          * Organization, or organization Unit
          */
-        scope: number | string,
+        scope: string,
         /**
          * Entity Type the type of the resource
          */
@@ -151,7 +154,7 @@ export class A_SDK_CommonHelper {
         /**
          * Entity ID the unique identifier of the resource
          */
-        id: number | string
+        id: string
 
         /**
          * Version of the entity (optional)
@@ -163,9 +166,9 @@ export class A_SDK_CommonHelper {
 
         return {
             namespace,
-            scope: isNaN(Number(scope)) ? scope : Number(scope),
+            scope: scope,
             entity,
-            id: isNaN(Number(id)) ? id : Number(id),
+            id: id,
             version: version ? version : undefined
         };
     }

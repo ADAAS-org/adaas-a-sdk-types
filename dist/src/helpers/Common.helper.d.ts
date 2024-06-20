@@ -65,7 +65,7 @@ export declare class A_SDK_CommonHelper {
          * Entity Scope the primary location of the resource
          * Organization, or organization Unit
          */
-        scope: number | string;
+        scope: string;
         /**
          * Entity Type the type of the resource
          */
@@ -73,7 +73,7 @@ export declare class A_SDK_CommonHelper {
         /**
          * Entity ID the unique identifier of the resource
          */
-        id: number | string;
+        id: string;
         /**
          * Version of the entity (optional)
          */

@@ -88,9 +88,9 @@ class A_SDK_CommonHelper {
         const [scope, entity, id] = body.split(':');
         return {
             namespace,
-            scope: isNaN(Number(scope)) ? scope : Number(scope),
+            scope: scope,
             entity,
-            id: isNaN(Number(id)) ? id : Number(id),
+            id: id,
             version: version ? version : undefined
         };
     }
