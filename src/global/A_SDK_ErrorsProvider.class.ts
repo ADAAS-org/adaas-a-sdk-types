@@ -34,8 +34,7 @@ export class A_SDK_ErrorsProvider {
      * 
      * @param registry 
      */
-    addRegistry(registry: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error>
-        | A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error>[]
+    addRegistry(registry: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error> | A_SDK_TYPES__Error[]
     ): A_SDK_ErrorsProvider {
         const errors = Array.isArray(registry) ? registry : Object.values(registry);
 
