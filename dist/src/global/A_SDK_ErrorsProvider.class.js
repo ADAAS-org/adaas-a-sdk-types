@@ -28,11 +28,13 @@ class A_SDK_ErrorsProvider {
      * @param registry
      */
     addRegistry(registry) {
-        const errors = Object.values(registry);
+        const errors = Array.isArray(registry) ? registry : Object.values(registry);
         errors.forEach(err => this.registerError(err));
         return this;
     }
     /**
+     *
+     * Adds an error to the registry
      *
      * @param error
      */
