@@ -71,9 +71,11 @@ class A_SDK_CommonHelper {
      */
     static generateASEID(props) {
         const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
-        return `${namespace}@${props.entity}:${typeof props.id === 'number'
+        return `${namespace}@${typeof props.scope === 'number'
+            ? this.formatWithLeadingZeros(props.scope)
+            : props.scope}:${props.entity}:${typeof props.id === 'number'
             ? this.formatWithLeadingZeros(props.id)
-            : props.id}`;
+            : props.id}${props.version ? '@' + props.version : ''}`;
     }
     /**
      * Extract namespace, entity, and id from an ASEID
@@ -82,11 +84,14 @@ class A_SDK_CommonHelper {
      * @returns
      */
     static extractASEID(identity) {
-        const [namespace, entity, id] = identity.split('@')[1].split(':');
+        const [namespace, body, version] = identity.split('@');
+        const [scope, entity, id] = body.split(':');
         return {
             namespace,
+            scope: isNaN(Number(scope)) ? scope : Number(scope),
             entity,
-            id: isNaN(parseInt(id)) ? id : parseInt(id)
+            id: isNaN(Number(id)) ? id : Number(id),
+            version: version ? version : undefined
         };
     }
 }

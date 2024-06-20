@@ -10,12 +10,19 @@ import { A_SDK_TYPES__Dictionary } from "../types/common.types";
  */
 export class A_SDK_ErrorsProvider {
 
-    private alias: string = 'A_SDK_ErrorsProvider';
+    private namespace: string = 'a-sdk';
 
     protected registeredErrors: Map<string, A_SDK_TYPES__Error> = new Map();
 
-    constructor(alias: string) {
-        this.alias = alias;
+    constructor(
+        /**
+         * Namespace for the errors
+         * generally it is the application name or code, should correspond to the namespace of the application
+         */
+        namespace?: string
+    ) {
+
+        this.namespace = namespace || process.env.ADAAS_NAMESPACE || this.namespace;
         /**
          * Add default errors to the registry
          */
@@ -27,10 +34,12 @@ export class A_SDK_ErrorsProvider {
      * 
      * @param registry 
      */
-    addRegistry(registry: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error>) {
+    addRegistry(registry: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error>): A_SDK_ErrorsProvider {
         const errors = Object.values(registry);
 
         errors.forEach(err => this.registerError(err));
+
+        return this;
     }
 
 
@@ -38,11 +47,13 @@ export class A_SDK_ErrorsProvider {
      * 
      * @param error 
      */
-    registerError(error: A_SDK_TYPES__Error) {
+    registerError(error: A_SDK_TYPES__Error): A_SDK_ErrorsProvider {
         this.registeredErrors.set(error.code, {
             ...error,
-            code: `${this.alias}-${error.code}`
+            code: `${this.namespace}@error:${error.code}`
         });
+
+        return this;
     }
 
     /**

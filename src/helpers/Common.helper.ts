@@ -90,16 +90,40 @@ export class A_SDK_CommonHelper {
      * @returns 
      */
     static generateASEID(props: {
+        /**
+         * Namespace for the ASEID 
+         * generally it is the application name or code, should correspond to the namespace of the application
+         */
         namespace?: string,
+        /**
+         * Entity Scope the primary location of the resource 
+         * Organization, or organization Unit
+         */
+        scope: number | string
+        /**
+         * Entity Type the type of the resource
+         */
         entity: string
+        /**
+         * Entity ID the unique identifier of the resource
+         */
         id: number | string
+
+        /**
+         * Version of the entity (optional)
+         */
+        version?: string
     }): string {
         const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
 
-        return `${namespace}@${props.entity}:${typeof props.id === 'number'
-            ? this.formatWithLeadingZeros(props.id)
-            : props.id
-            }`;
+        return `${namespace}@${typeof props.scope === 'number'
+            ? this.formatWithLeadingZeros(props.scope)
+            : props.scope
+
+            }:${props.entity}:${typeof props.id === 'number'
+                ? this.formatWithLeadingZeros(props.id)
+                : props.id
+            }${props.version ? '@' + props.version : ''}`
     }
 
 
@@ -110,15 +134,39 @@ export class A_SDK_CommonHelper {
      * @returns 
      */
     static extractASEID(identity: string): {
+        /*
+         * Namespace for the ASEID 
+         * generally it is the application name or code, should correspond to the namespace of the application
+         */
         namespace: string,
+        /**
+         * Entity Scope the primary location of the resource
+         * Organization, or organization Unit
+         */
+        scope: number | string,
+        /**
+         * Entity Type the type of the resource
+         */
         entity: string
+        /**
+         * Entity ID the unique identifier of the resource
+         */
         id: number | string
+
+        /**
+         * Version of the entity (optional)
+         */
+        version?: string
     } {
-        const [namespace, entity, id] = identity.split('@')[1].split(':');
+        const [namespace, body, version] = identity.split('@');
+        const [scope, entity, id] = body.split(':');
+
         return {
             namespace,
+            scope: isNaN(Number(scope)) ? scope : Number(scope),
             entity,
-            id: isNaN(parseInt(id)) ? id : parseInt(id)
-        }
+            id: isNaN(Number(id)) ? id : Number(id),
+            version: version ? version : undefined
+        };
     }
 }

@@ -5,7 +5,7 @@ export declare class A_Entity<_NewType = any, _SerializedType extends A_SDK_TYPE
      *  S - System
      *  E - Entity
      *  I - Identifier
-     *  D - iDenitifier
+     *  D - iDentifier
      *
      *
      *  adaas-sso@usr:0000000001

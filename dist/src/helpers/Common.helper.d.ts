@@ -30,9 +30,28 @@ export declare class A_SDK_CommonHelper {
      * @returns
      */
     static generateASEID(props: {
+        /**
+         * Namespace for the ASEID
+         * generally it is the application name or code, should correspond to the namespace of the application
+         */
         namespace?: string;
+        /**
+         * Entity Scope the primary location of the resource
+         * Organization, or organization Unit
+         */
+        scope: number | string;
+        /**
+         * Entity Type the type of the resource
+         */
         entity: string;
+        /**
+         * Entity ID the unique identifier of the resource
+         */
         id: number | string;
+        /**
+         * Version of the entity (optional)
+         */
+        version?: string;
     }): string;
     /**
      * Extract namespace, entity, and id from an ASEID
@@ -42,7 +61,22 @@ export declare class A_SDK_CommonHelper {
      */
     static extractASEID(identity: string): {
         namespace: string;
+        /**
+         * Entity Scope the primary location of the resource
+         * Organization, or organization Unit
+         */
+        scope: number | string;
+        /**
+         * Entity Type the type of the resource
+         */
         entity: string;
+        /**
+         * Entity ID the unique identifier of the resource
+         */
         id: number | string;
+        /**
+         * Version of the entity (optional)
+         */
+        version?: string;
     };
 }

@@ -13,7 +13,7 @@ export class A_Entity<
      *  S - System 
      *  E - Entity
      *  I - Identifier
-     *  D - iDenitifier
+     *  D - iDentifier
      * 
      * 
      *  adaas-sso@usr:0000000001
