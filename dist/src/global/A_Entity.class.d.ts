@@ -18,7 +18,7 @@ export declare class A_Entity<_NewType = any, _SerializedType extends A_SDK_TYPE
      * Extracts the ID from the ASEID
      * ID is the unique identifier of the entity
      */
-    get id(): string;
+    get id(): string | number;
     /**
      * Extracts the namespace from the ASEID
      * namespace is an application specific identifier from where the entity is coming from

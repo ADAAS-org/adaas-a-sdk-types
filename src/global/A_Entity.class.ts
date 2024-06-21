@@ -36,7 +36,7 @@ export class A_Entity<
      * Extracts the ID from the ASEID
      * ID is the unique identifier of the entity
      */
-    get id(): string {
+    get id(): string | number {
         const { id } = A_SDK_CommonHelper.parseASEID(this.aseid);
         return id;
     }
