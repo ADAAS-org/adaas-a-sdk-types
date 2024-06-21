@@ -2,6 +2,8 @@ type NestedObject = { [key: string]: any };
 
 export class A_SDK_CommonHelper {
 
+    static aseidRegexp: RegExp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`)
+
 
     static delay(ms = 1000) {
         return new Promise((resolve) => setTimeout(resolve, ms))
@@ -82,6 +84,12 @@ export class A_SDK_CommonHelper {
         return String(Number(formattedNumber)); // Convert to number and back to string to remove leading zeros
     }
 
+    static isASEID(identity: string): boolean {
+        return this.aseidRegexp.test(
+            identity
+        )
+    }
+
 
     /**
      * Generate an ASEID from a namespace, entity, and id
@@ -89,54 +97,81 @@ export class A_SDK_CommonHelper {
      * @param props 
      * @returns 
      */
-    static generateASEID(props: {
-        /**
-         * Namespace for the ASEID 
-         * generally it is the application name or code, should correspond to the namespace of the application
-         */
-        namespace?: string,
+    static generateASEID(
+        props: {
+            /**
+             * Namespace for the ASEID 
+             * Generally it is the application name or code, should correspond to the namespace of the application
+             * Could be ID or ASEID
+             */
+            namespace?: string,
 
-        /**
-         * Entity Scope the primary location of the resource 
-         * Organization, or organization Unit
-         */
-        scope: number | string
+            /**
+             * Entity Scope the primary location of the resource 
+             * Organization, or organization Unit
+             * Could be ID or ASEID
+             * 
+             */
+            scope: number | string
 
-        /**
-         * Entity Type the type of the resource
-         */
-        entity: string
+            /**
+             * Entity Type the type of the resource
+             */
+            entity: string
 
-        /**
-         * Entity ID the unique identifier of the resource
-         */
-        id: number | string
+            /**
+             * Entity ID the unique identifier of the resource
+             */
+            id: number | string
 
-        /**
-         * Version of the entity (optional)
-         */
-        version?: string
-    }): string {
-        const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
+            /**
+             * Version of the entity (optional)
+             */
+            version?: string
+        },
+        config?: Partial<{
+            /**
+             * If true, the shard will not be added to the ASEID
+             */
+            noShard: boolean
+        }>
+    ): string {
 
-        return `${namespace}@${typeof props.scope === 'number'
-            ? this.formatWithLeadingZeros(props.scope)
-            : props.scope
+        const namespace = props.namespace
+            ? this.isASEID(props.namespace)
+                ? this.parseASEID(props.namespace).id
+                : props.namespace
+            : process.env.ADAAS_NAMESPACE;
 
-            }:${props.entity}:${typeof props.id === 'number'
-                ? this.formatWithLeadingZeros(props.id)
-                : props.id
-            }${props.version ? '@' + props.version : ''}`
+        const scope = typeof props.scope === 'number'
+            ? this.formatWithLeadingZeros(props.scope) :
+            this.isASEID(props.scope)
+                ? this.parseASEID(props.scope).id
+                : props.scope;
+
+        const entity = props.entity;
+
+        const id = typeof props.id === 'number'
+            ? this.formatWithLeadingZeros(props.id)
+            : props.id;
+
+        const version = props.version;
+
+        const shard = config?.noShard ? undefined : process.env.ADAAS_APP_SHARD;
+
+
+        return `${namespace}@${scope}:${entity}:${shard ? (shard + '--' + id) : id}${version ? ('@' + version) : ''}`
     }
 
 
     /**
-     * Extract namespace, entity, and id from an ASEID
+     * Parse ASEID into its components
+     * 
      * 
      * @param identity 
      * @returns 
      */
-    static extractASEID(identity: string): {
+    static parseASEID(identity: string): {
         /*
          * Namespace for the ASEID 
          * generally it is the application name or code, should correspond to the namespace of the application

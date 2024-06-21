@@ -1,4 +1,5 @@
 export declare class A_SDK_CommonHelper {
+    static aseidRegexp: RegExp;
     static delay(ms?: number): Promise<unknown>;
     static resolve(): Promise<undefined>;
     static omitArrayProperties<T, S extends string>(array: Array<T>, fields: string[]): Omit<T, S>[];
@@ -23,6 +24,7 @@ export declare class A_SDK_CommonHelper {
      * Remove leading zeros from a formatted number
      */
     static removeLeadingZeros(formattedNumber: any): string;
+    static isASEID(identity: string): boolean;
     /**
      * Generate an ASEID from a namespace, entity, and id
      *
@@ -32,12 +34,15 @@ export declare class A_SDK_CommonHelper {
     static generateASEID(props: {
         /**
          * Namespace for the ASEID
-         * generally it is the application name or code, should correspond to the namespace of the application
+         * Generally it is the application name or code, should correspond to the namespace of the application
+         * Could be ID or ASEID
          */
         namespace?: string;
         /**
          * Entity Scope the primary location of the resource
          * Organization, or organization Unit
+         * Could be ID or ASEID
+         *
          */
         scope: number | string;
         /**
@@ -52,14 +57,20 @@ export declare class A_SDK_CommonHelper {
          * Version of the entity (optional)
          */
         version?: string;
-    }): string;
+    }, config?: Partial<{
+        /**
+         * If true, the shard will not be added to the ASEID
+         */
+        noShard: boolean;
+    }>): string;
     /**
-     * Extract namespace, entity, and id from an ASEID
+     * Parse ASEID into its components
+     *
      *
      * @param identity
      * @returns
      */
-    static extractASEID(identity: string): {
+    static parseASEID(identity: string): {
         namespace: string;
         /**
          * Entity Scope the primary location of the resource

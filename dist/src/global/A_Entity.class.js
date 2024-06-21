@@ -18,7 +18,7 @@ class A_Entity {
      * ID is the unique identifier of the entity
      */
     get id() {
-        const { id } = Common_helper_1.A_SDK_CommonHelper.extractASEID(this.aseid);
+        const { id } = Common_helper_1.A_SDK_CommonHelper.parseASEID(this.aseid);
         return id;
     }
     /**
@@ -26,15 +26,23 @@ class A_Entity {
      * namespace is an application specific identifier from where the entity is coming from
      */
     get namespace() {
-        const { namespace } = Common_helper_1.A_SDK_CommonHelper.extractASEID(this.aseid);
+        const { namespace } = Common_helper_1.A_SDK_CommonHelper.parseASEID(this.aseid);
         return namespace;
+    }
+    /**
+     * Extracts the scope from the ASEID
+     * scope is the scope of the entity from Application Namespace
+     */
+    get scope() {
+        const { scope } = Common_helper_1.A_SDK_CommonHelper.parseASEID(this.aseid);
+        return scope;
     }
     /**
      * Extracts the entity from the ASEID
      * entity is the name of the entity from Application Namespace
      */
     get entity() {
-        const { entity } = Common_helper_1.A_SDK_CommonHelper.extractASEID(this.aseid);
+        const { entity } = Common_helper_1.A_SDK_CommonHelper.parseASEID(this.aseid);
         return entity;
     }
 }

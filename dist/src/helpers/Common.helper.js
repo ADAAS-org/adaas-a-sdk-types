@@ -63,27 +63,42 @@ class A_SDK_CommonHelper {
     static removeLeadingZeros(formattedNumber) {
         return String(Number(formattedNumber)); // Convert to number and back to string to remove leading zeros
     }
+    static isASEID(identity) {
+        return this.aseidRegexp.test(identity);
+    }
     /**
      * Generate an ASEID from a namespace, entity, and id
      *
      * @param props
      * @returns
      */
-    static generateASEID(props) {
-        const namespace = props.namespace || process.env.ADAAS_NAMESPACE;
-        return `${namespace}@${typeof props.scope === 'number'
-            ? this.formatWithLeadingZeros(props.scope)
-            : props.scope}:${props.entity}:${typeof props.id === 'number'
+    static generateASEID(props, config) {
+        const namespace = props.namespace
+            ? this.isASEID(props.namespace)
+                ? this.parseASEID(props.namespace).id
+                : props.namespace
+            : process.env.ADAAS_NAMESPACE;
+        const scope = typeof props.scope === 'number'
+            ? this.formatWithLeadingZeros(props.scope) :
+            this.isASEID(props.scope)
+                ? this.parseASEID(props.scope).id
+                : props.scope;
+        const entity = props.entity;
+        const id = typeof props.id === 'number'
             ? this.formatWithLeadingZeros(props.id)
-            : props.id}${props.version ? '@' + props.version : ''}`;
+            : props.id;
+        const version = props.version;
+        const shard = (config === null || config === void 0 ? void 0 : config.noShard) ? undefined : process.env.ADAAS_APP_SHARD;
+        return `${namespace}@${scope}:${entity}:${shard ? (shard + '--' + id) : id}${version ? ('@' + version) : ''}`;
     }
     /**
-     * Extract namespace, entity, and id from an ASEID
+     * Parse ASEID into its components
+     *
      *
      * @param identity
      * @returns
      */
-    static extractASEID(identity) {
+    static parseASEID(identity) {
         const [namespace, body, version] = identity.split('@');
         const [scope, entity, id] = body.split(':');
         return {
@@ -96,4 +111,5 @@ class A_SDK_CommonHelper {
     }
 }
 exports.A_SDK_CommonHelper = A_SDK_CommonHelper;
+A_SDK_CommonHelper.aseidRegexp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`);
 //# sourceMappingURL=Common.helper.js.map

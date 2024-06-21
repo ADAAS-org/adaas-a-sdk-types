@@ -16,9 +16,9 @@ export class A_Entity<
      *  D - iDentifier
      * 
      * 
-     *  adaas-sso@usr:0000000001
+     *  adaas-sso@scope:usr:0000000001
      * 
-     *  APP_NAMESPACE + @ + ENTITY_NAME + : + ID_WITH_LEADING_ZEROS 
+     *  APP_NAMESPACE + @ + SCOPE + : ENTITY_NAME + : + ID + @ + VERSION 
      */
     aseid!: string;
 
@@ -36,8 +36,8 @@ export class A_Entity<
      * Extracts the ID from the ASEID
      * ID is the unique identifier of the entity
      */
-    get id(): number | string {
-        const { id } = A_SDK_CommonHelper.extractASEID(this.aseid);
+    get id(): string {
+        const { id } = A_SDK_CommonHelper.parseASEID(this.aseid);
         return id;
     }
 
@@ -46,8 +46,18 @@ export class A_Entity<
      * namespace is an application specific identifier from where the entity is coming from
      */
     get namespace(): string {
-        const { namespace } = A_SDK_CommonHelper.extractASEID(this.aseid);
+        const { namespace } = A_SDK_CommonHelper.parseASEID(this.aseid);
         return namespace;
+    }
+
+
+    /**
+     * Extracts the scope from the ASEID
+     * scope is the scope of the entity from Application Namespace
+     */
+    get scope(): string {
+        const { scope } = A_SDK_CommonHelper.parseASEID(this.aseid);
+        return scope;
     }
 
     /**
@@ -55,7 +65,7 @@ export class A_Entity<
      * entity is the name of the entity from Application Namespace
      */
     get entity(): string {
-        const { entity } = A_SDK_CommonHelper.extractASEID(this.aseid);
+        const { entity } = A_SDK_CommonHelper.parseASEID(this.aseid);
         return entity;
     }
 }

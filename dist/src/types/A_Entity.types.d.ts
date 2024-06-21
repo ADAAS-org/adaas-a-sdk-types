@@ -7,9 +7,9 @@ export interface A_SDK_TYPES__IAEntity {
      *  D - iDentifier
      *
      *
-     *  adaas-sso@usr:0000000001
+     *  adaas-sso@scope:usr:0000000001
      *
-     *  APP_NAMESPACE + @ + ENTITY_NAME + : + ID_WITH_LEADING_ZEROS
+     *  APP_NAMESPACE + @ + SCOPE + : ENTITY_NAME + : + ID + @ + VERSION
      */
     aseid: string;
 }
