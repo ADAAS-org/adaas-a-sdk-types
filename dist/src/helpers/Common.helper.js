@@ -109,6 +109,9 @@ class A_SDK_CommonHelper {
             version: version ? version : undefined
         };
     }
+    static toUpperSnakeCase(str) {
+        return str.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+    }
 }
 exports.A_SDK_CommonHelper = A_SDK_CommonHelper;
 A_SDK_CommonHelper.aseidRegexp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`);

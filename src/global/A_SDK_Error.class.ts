@@ -17,6 +17,7 @@ export class A_SDK_Error extends Error {
     ) {
         super(params?.message || 'Oops... Something went wrong');
         this.identifyErrorType(params);
+        
     }
 
 

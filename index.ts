@@ -32,3 +32,11 @@ export {
 export {
     A_SDK_DefaultLogger
 } from './src/global/A_SDK_Logger.class';
+
+export {
+    A_SDK_Context
+} from './src/global/A_SDK_Context.class';
+
+export {
+    A_SDK_TYPES__ContextConfigurations
+} from './src/types/A_SDK_Context.types';

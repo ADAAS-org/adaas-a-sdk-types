@@ -207,4 +207,9 @@ export class A_SDK_CommonHelper {
             version: version ? version : undefined
         };
     }
+
+
+    static toUpperSnakeCase(str: string): string {
+        return str.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+    }
 }
