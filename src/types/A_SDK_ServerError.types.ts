@@ -1,8 +1,7 @@
+import { A_SDK_TYPES__Error } from "./A_SDK_Error.type";
+
 export type A_SDK_TYPES__ServerError = {
-    message: string;
-    code: string;
-    description: string
+
     serverCode: number,
 
-    originalError?: Error | unknown
-}
+} & A_SDK_TYPES__Error

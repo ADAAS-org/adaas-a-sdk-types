@@ -1,8 +1,10 @@
 import { A_SDK_TYPES__ServerError } from '../types/A_SDK_ServerError.types';
 import { AxiosError } from 'axios';
+import { A_SDK_Error } from './A_SDK_Error.class';
+import { A_SDK_CONSTANTS__ERROR_CODES } from '../constants/errors.constants';
 
 
-export class A_SDK_ServerError extends Error {
+export class A_SDK_ServerError extends A_SDK_Error {
 
     code!: string;
     description!: string;
@@ -10,14 +12,13 @@ export class A_SDK_ServerError extends Error {
     originalError: Error | any
 
 
-
-    constructor(params: A_SDK_TYPES__ServerError | Error | AxiosError  | any) {
-        super(params?.message || 'Oops... Something went wrong');
+    constructor(params: A_SDK_TYPES__ServerError | Error | AxiosError | any) {
+        super(params);
         this.identifyErrorType(params);
     }
 
 
-    private identifyErrorType(error: Error | AxiosError | A_SDK_TYPES__ServerError ) {
+    protected identifyErrorType(error: Error | AxiosError | A_SDK_TYPES__ServerError) {
 
         if ((error as A_SDK_TYPES__ServerError).code &&
             (error as A_SDK_TYPES__ServerError).description &&
@@ -26,24 +27,27 @@ export class A_SDK_ServerError extends Error {
             const target = error as A_SDK_TYPES__ServerError;
 
             this.message = target.message;
-            this.code = target.code;
+            this.code = A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
             this.description = target.description;
             this.serverCode = target.serverCode;
             this.originalError = target.originalError;
+            this.link = target.link;
         }
         else if (error instanceof Error) {
             this.message = error.message;
-            this.code = 'ADAAS-DEFAULT-ERR-0000';
+            this.code = A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
             this.description = 'If you see this error please let us know.';
             this.serverCode = 500;
             this.originalError = error;
+            this.link = 'https://support.adaas.org/error/' + this.id;
 
         } else if (error instanceof AxiosError) {
             this.message = error.response?.data.message || error.message;
-            this.code = error.response?.data.code || 'ADAAS-DEFAULT-ERR-0000';
+            this.code = error.response?.data.code || A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
             this.description = error.response?.data.description || 'If you see this error please let us know.';
             this.serverCode = error.response?.status || 500;
             this.originalError = error.response;
+            this.link = 'https://support.adaas.org/error/' + this.id;
         }
     }
 

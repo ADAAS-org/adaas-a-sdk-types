@@ -1,6 +1,7 @@
 import { A_SDK_TYPES__ServerError } from '../types/A_SDK_ServerError.types';
 import { AxiosError } from 'axios';
 import { A_SDK_TYPES__Error } from '../types/A_SDK_Error.type';
+import { A_SDK_CONSTANTS__ERROR_CODES } from '../constants/errors.constants';
 
 
 export class A_SDK_Error extends Error {
@@ -8,19 +9,23 @@ export class A_SDK_Error extends Error {
     code!: string;
     description!: string;
     originalError?: Error | any
-
+    link?: string;
 
 
     constructor(
-        params: A_SDK_TYPES__Error | Error | AxiosError  | any
-
+        params: A_SDK_TYPES__Error | Error | AxiosError | any
     ) {
         super(params?.message || 'Oops... Something went wrong');
         this.identifyErrorType(params);
     }
 
 
-    private identifyErrorType(error: Error | AxiosError | A_SDK_TYPES__Error ) {
+    get id(): string | undefined {
+        return this.code.split('@')[1]
+    }
+
+
+    protected identifyErrorType(error: Error | AxiosError | A_SDK_TYPES__Error) {
 
         if ((error as A_SDK_TYPES__ServerError).code &&
             (error as A_SDK_TYPES__ServerError).description &&
@@ -32,18 +37,22 @@ export class A_SDK_Error extends Error {
             this.code = target.code;
             this.description = target.description;
             this.originalError = target.originalError;
+            this.link = target.link;
         }
         else if (error instanceof Error) {
             this.message = error.message;
-            this.code = 'ADAAS-DEFAULT-ERR-0000';
+            this.code = A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
             this.description = 'If you see this error please let us know.';
             this.originalError = error;
+            this.link = 'https://support.adaas.org/error/' + this.id;
+
 
         } else if (error instanceof AxiosError) {
             this.message = error.response?.data.message || error.message;
-            this.code = error.response?.data.code || 'ADAAS-DEFAULT-ERR-0000';
+            this.code = error.response?.data.code || A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
             this.description = error.response?.data.description || 'If you see this error please let us know.';
             this.originalError = error.response;
+            this.link = 'https://support.adaas.org/error/' + this.id;
         }
     }
 

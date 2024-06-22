@@ -7,7 +7,7 @@ export interface A_SDK_TYPES__IAEntity {
      *  D - iDentifier
      * 
      * 
-     *  adaas-sso@scope:usr:0000000001
+     *  adaas-sso@00000001:usr:0000000001
      * 
      *  APP_NAMESPACE + @ + SCOPE + : ENTITY_NAME + : + ID + @ + VERSION 
      */

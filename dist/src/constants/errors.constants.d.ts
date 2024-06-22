@@ -1,9 +1,9 @@
 export declare enum A_SDK_CONSTANTS__ERROR_CODES {
-    UNEXPECTED_ERROR = "DEFAULT-ERR-0001",
-    METHOD_NOT_IMPLEMENTED = "DEFAULT-ERR-0002",
-    ROUTE_NOT_FOUND = "DEFAULT-ERR-0003",
-    TOKEN_NOT_PROVIDED = "DEFAULT-ERR-0004",
-    NOT_ALL_PARAMS_WAS_PROVIDED = "DEFAULT-ERR-0005"
+    UNEXPECTED_ERROR = "ERR-0001",
+    METHOD_NOT_IMPLEMENTED = "ERR-0002",
+    ROUTE_NOT_FOUND = "ERR-0003",
+    TOKEN_NOT_PROVIDED = "ERR-0004",
+    NOT_ALL_PARAMS_WAS_PROVIDED = "ERR-0005"
 }
 export declare const A_SDK_CONSTANTS__DEFAULT_ERRORS: {
     UNEXPECTED_ERROR: {
@@ -32,7 +32,6 @@ export declare const A_SDK_CONSTANTS__DEFAULT_ERRORS: {
     };
     NOT_ALL_PARAMS_WAS_PROVIDED: {
         serverCode: number;
-        name: string;
         code: string;
         description: string;
         message: string;

@@ -13,10 +13,9 @@ class A_SDK_ErrorsProvider {
      * Namespace for the errors
      * generally it is the application name or code, should correspond to the namespace of the application
      */
-    namespace) {
-        this.namespace = 'a-sdk';
+    namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk') {
+        this.namespace = namespace;
         this.registeredErrors = new Map();
-        this.namespace = namespace || process.env.ADAAS_NAMESPACE || this.namespace;
         /**
          * Add default errors to the registry
          */

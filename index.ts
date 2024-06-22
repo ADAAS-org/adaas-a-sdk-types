@@ -27,3 +27,8 @@ export {
     A_SDK_TYPES__IRequestFilter,
     A_SDK_TYPES__IRequestPagination
 } from './src/types/A_SDK_ApiProvider.types';
+
+
+export {
+    A_SDK_DefaultLogger
+} from './src/global/A_SDK_Logger.class';
