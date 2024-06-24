@@ -1,6 +1,9 @@
+import { A_SDK_ScheduleObject } from "../global/A_SDK_ScheduleObject.class";
+import { A_SDK_TYPES__ScheduleObjectConfig } from "../types/A_SDK_ScheduleObject.types";
 export declare class A_SDK_CommonHelper {
     static aseidRegexp: RegExp;
-    static delay(ms?: number): Promise<unknown>;
+    static delay<T = void>(ms?: number, resolver?: Promise<T>): Promise<T>;
+    static schedule<T = void>(ms: number | undefined, resolver: () => Promise<T>, config?: A_SDK_TYPES__ScheduleObjectConfig): A_SDK_ScheduleObject<T>;
     static resolve(): Promise<undefined>;
     static omitArrayProperties<T, S extends string>(array: Array<T>, fields: string[]): Omit<T, S>[];
     static sanitizeHTML(html: string): string;

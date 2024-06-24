@@ -1,3 +1,7 @@
+import { A_SDK_Deferred } from "../global/A_SDK_Deferred.class";
+import { A_SDK_ScheduleObject } from "../global/A_SDK_ScheduleObject.class";
+import { A_SDK_TYPES__ScheduleObjectConfig } from "../types/A_SDK_ScheduleObject.types";
+
 type NestedObject = { [key: string]: any };
 
 export class A_SDK_CommonHelper {
@@ -5,8 +9,24 @@ export class A_SDK_CommonHelper {
     static aseidRegexp: RegExp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`)
 
 
-    static delay(ms = 1000) {
-        return new Promise((resolve) => setTimeout(resolve, ms))
+    static delay<T = void>(ms = 1000, resolver?: Promise<T>) {
+        return new Promise<T>((resolve, reject) => setTimeout(() => {
+            if (resolver) {
+                resolver.then(resolve).catch(reject);
+            }
+            else {
+                resolve(0 as T);
+            }
+        }, ms))
+    }
+
+
+    static schedule<T = void>(
+        ms = 1000,
+        resolver: () => Promise<T>,
+        config?: A_SDK_TYPES__ScheduleObjectConfig
+    ): A_SDK_ScheduleObject<T> {
+        return new A_SDK_ScheduleObject<T>(ms, resolver, config);
     }
 
     static resolve() {

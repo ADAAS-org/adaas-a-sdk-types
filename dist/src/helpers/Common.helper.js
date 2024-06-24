@@ -1,9 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.A_SDK_CommonHelper = void 0;
+const A_SDK_ScheduleObject_class_1 = require("../global/A_SDK_ScheduleObject.class");
 class A_SDK_CommonHelper {
-    static delay(ms = 1000) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
+    static delay(ms = 1000, resolver) {
+        return new Promise((resolve, reject) => setTimeout(() => {
+            if (resolver) {
+                resolver.then(resolve).catch(reject);
+            }
+            else {
+                resolve(0);
+            }
+        }, ms));
+    }
+    static schedule(ms = 1000, resolver, config) {
+        return new A_SDK_ScheduleObject_class_1.A_SDK_ScheduleObject(ms, resolver, config);
     }
     static resolve() {
         return new Promise((resolve) => resolve(undefined));
