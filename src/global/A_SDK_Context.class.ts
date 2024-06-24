@@ -1,7 +1,7 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
 import { LibPolyfill } from '../lib/Lib.polyfill'
 import { A_SDK_Error } from "./A_SDK_Error.class";
-import { A_SDK_TYPES__ContextConfigurations } from '../types/A_SDK_Context.types';
+import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
 import { A_SDK_CommonHelper } from '../helpers/Common.helper';
 
 
@@ -21,26 +21,38 @@ export class A_SDK_Context {
     protected CONFIG_IGNORE_ERRORS: boolean = false;
     protected CONFIG_FRONTEND: boolean = false;
 
-    protected credentialsPromise?: Promise<void>;
+    ready!: Promise<void>;
 
     constructor() {
+        this.init();
     }
 
 
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
      */
-    protected init() {
+    async init() {
+        await this.loadCredentials();
+        await this.defaultInit();
+    }
+
+
+    protected async defaultInit() {
         this.logger = new A_SDK_DefaultLogger(this.verbose, this.ignoreErrors);
 
         // global logger configuration
 
-        if (!this.CONFIG_FRONTEND)
+        if (!this.CONFIG_FRONTEND) {
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
                 if (error instanceof A_SDK_Error)
                     this.logger.error(error);
             });
+            process.on('unhandledRejection', (error) => {
+                if (error instanceof A_SDK_Error)
+                    this.logger.error(error);
+            });
+        }
     }
 
     get verbose(): boolean {
@@ -69,7 +81,7 @@ export class A_SDK_Context {
 
 
     protected getConfigurationPropertyAlias(property: string): string {
-        return `${String(this.namespace).toUpperCase()}_${A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
+        return `${A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_${A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
     }
 
 
@@ -95,18 +107,11 @@ export class A_SDK_Context {
     }
 
 
-    setCredentials(
-        /**
-         * API Credentials Client ID
-         */
-        client_id: string,
-        /**
-         * API Credentials Client Secret
-         */
-        client_secret: string
+    setCredentials<T extends A_SDK_TYPES__IContextCredentials = A_SDK_TYPES__IContextCredentials>(
+        credentials: T
     ) {
-        this.CLIENT_ID = client_id;
-        this.CLIENT_SECRET = client_secret;
+        this.CLIENT_ID = credentials.client_id;
+        this.CLIENT_SECRET = credentials.client_secret;
 
         this.logger.log('Credentials set manually');
     }
@@ -115,8 +120,8 @@ export class A_SDK_Context {
     protected async loadCredentials(): Promise<void> {
         const fs = await LibPolyfill.fs();
 
-        if (!this.credentialsPromise)
-            this.credentialsPromise = new Promise(async (resolve) => {
+        if (!this.ready)
+            this.ready = new Promise(async (resolve) => {
 
                 if (!!(process && process.env)) {
                     await this.loadCredentialsFromEnvironment();
@@ -131,7 +136,7 @@ export class A_SDK_Context {
                 resolve();
             });
 
-        return this.credentialsPromise;
+        return this.ready;
     }
 
 
@@ -139,6 +144,8 @@ export class A_SDK_Context {
 
         this.CLIENT_ID = process.env[this.clientIdAlias] || this.CLIENT_ID;
         this.CLIENT_SECRET = process.env[this.clientSecretAlias] || this.CLIENT_SECRET;
+
+        this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
 
         this.CONFIG_SDK_VALIDATION = process.env[this.getConfigurationPropertyAlias('CONFIG_SDK_VALIDATION')] === 'true' || this.CONFIG_SDK_VALIDATION;
         this.CONFIG_VERBOSE = process.env[this.getConfigurationPropertyAlias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
@@ -159,6 +166,7 @@ export class A_SDK_Context {
             const config = JSON.parse(data);
 
             this.namespace = config.namespace || this.namespace;
+
             this.CLIENT_ID = config.client_id || config.clientId || this.CLIENT_ID;
             this.CLIENT_SECRET = config.client_secret || config.clientSecret || this.CLIENT_SECRET;
             this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;

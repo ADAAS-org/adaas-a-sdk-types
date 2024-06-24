@@ -10,3 +10,5 @@ export { A_SDK_TYPES__IDefaultPagination, A_SDK_TYPES__IRequestFilter, A_SDK_TYP
 export { A_SDK_DefaultLogger } from './src/global/A_SDK_Logger.class';
 export { A_SDK_Context } from './src/global/A_SDK_Context.class';
 export { A_SDK_TYPES__ContextConfigurations } from './src/types/A_SDK_Context.types';
+import { A_SDK_Context } from './src/global/A_SDK_Context.class';
+export declare const A_SDK_GlobalContext: A_SDK_Context;

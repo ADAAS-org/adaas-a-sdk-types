@@ -25,19 +25,33 @@ class A_SDK_Context {
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
         this.CONFIG_FRONTEND = false;
+        this.init();
     }
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
      */
     init() {
-        this.logger = new A_SDK_Logger_class_1.A_SDK_DefaultLogger(this.verbose, this.ignoreErrors);
-        // global logger configuration
-        if (!this.CONFIG_FRONTEND)
-            process.on('uncaughtException', (error) => {
-                // log only in case of A_AUTH_Error
-                if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
-                    this.logger.error(error);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.loadCredentials();
+            yield this.defaultInit();
+        });
+    }
+    defaultInit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger = new A_SDK_Logger_class_1.A_SDK_DefaultLogger(this.verbose, this.ignoreErrors);
+            // global logger configuration
+            if (!this.CONFIG_FRONTEND) {
+                process.on('uncaughtException', (error) => {
+                    // log only in case of A_AUTH_Error
+                    if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
+                        this.logger.error(error);
+                });
+                process.on('unhandledRejection', (error) => {
+                    if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
+                        this.logger.error(error);
+                });
+            }
+        });
     }
     get verbose() {
         return this.CONFIG_VERBOSE;
@@ -58,7 +72,7 @@ class A_SDK_Context {
         return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_CLIENT_SECRET`;
     }
     getConfigurationPropertyAlias(property) {
-        return `${String(this.namespace).toUpperCase()}_${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
+        return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
     }
     /**
      * Configures the SDK with the provided parameters or uses the default ones
@@ -77,24 +91,16 @@ class A_SDK_Context {
         // reinitialize the SDK
         this.init();
     }
-    setCredentials(
-    /**
-     * API Credentials Client ID
-     */
-    client_id, 
-    /**
-     * API Credentials Client Secret
-     */
-    client_secret) {
-        this.CLIENT_ID = client_id;
-        this.CLIENT_SECRET = client_secret;
+    setCredentials(credentials) {
+        this.CLIENT_ID = credentials.client_id;
+        this.CLIENT_SECRET = credentials.client_secret;
         this.logger.log('Credentials set manually');
     }
     loadCredentials() {
         return __awaiter(this, void 0, void 0, function* () {
             const fs = yield Lib_polyfill_1.LibPolyfill.fs();
-            if (!this.credentialsPromise)
-                this.credentialsPromise = new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+            if (!this.ready)
+                this.ready = new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
                     if (!!(process && process.env)) {
                         yield this.loadCredentialsFromEnvironment();
                     }
@@ -104,13 +110,14 @@ class A_SDK_Context {
                     this.init();
                     resolve();
                 }));
-            return this.credentialsPromise;
+            return this.ready;
         });
     }
     loadCredentialsFromEnvironment() {
         return __awaiter(this, void 0, void 0, function* () {
             this.CLIENT_ID = process.env[this.clientIdAlias] || this.CLIENT_ID;
             this.CLIENT_SECRET = process.env[this.clientSecretAlias] || this.CLIENT_SECRET;
+            this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
             this.CONFIG_SDK_VALIDATION = process.env[this.getConfigurationPropertyAlias('CONFIG_SDK_VALIDATION')] === 'true' || this.CONFIG_SDK_VALIDATION;
             this.CONFIG_VERBOSE = process.env[this.getConfigurationPropertyAlias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
             this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationPropertyAlias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;

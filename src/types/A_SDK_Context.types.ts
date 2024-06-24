@@ -25,3 +25,15 @@ export type A_SDK_TYPES__ContextConfigurations = {
      */
     frontEnd: boolean
 }
+
+
+export interface A_SDK_TYPES__IContextCredentials {
+    /**
+      * API Credentials Client ID
+      */
+    client_id: string,
+    /**
+     * API Credentials Client Secret
+     */
+    client_secret: string
+}

@@ -1,5 +1,5 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
-import { A_SDK_TYPES__ContextConfigurations } from '../types/A_SDK_Context.types';
+import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
 export declare class A_SDK_Context {
     logger: A_SDK_DefaultLogger;
     namespace: string;
@@ -9,12 +9,13 @@ export declare class A_SDK_Context {
     protected CONFIG_VERBOSE: boolean;
     protected CONFIG_IGNORE_ERRORS: boolean;
     protected CONFIG_FRONTEND: boolean;
-    protected credentialsPromise?: Promise<void>;
+    ready: Promise<void>;
     constructor();
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
      */
-    protected init(): void;
+    init(): Promise<void>;
+    protected defaultInit(): Promise<void>;
     get verbose(): boolean;
     get ignoreErrors(): boolean;
     get sdkValidation(): boolean;
@@ -31,15 +32,7 @@ export declare class A_SDK_Context {
      * @param sdkValidation
      */
     configure(config: Partial<A_SDK_TYPES__ContextConfigurations>): void;
-    setCredentials(
-    /**
-     * API Credentials Client ID
-     */
-    client_id: string, 
-    /**
-     * API Credentials Client Secret
-     */
-    client_secret: string): void;
+    setCredentials<T extends A_SDK_TYPES__IContextCredentials = A_SDK_TYPES__IContextCredentials>(credentials: T): void;
     protected loadCredentials(): Promise<void>;
     protected loadCredentialsFromEnvironment(): Promise<void>;
     protected loadConfigurationsFromFile(): Promise<void>;
