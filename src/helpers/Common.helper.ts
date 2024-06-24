@@ -212,4 +212,8 @@ export class A_SDK_CommonHelper {
     static toUpperSnakeCase(str: string): string {
         return str.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
     }
+
+    static toCamelCase(str: string): string {
+        return str.toLowerCase().replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+    }
 }

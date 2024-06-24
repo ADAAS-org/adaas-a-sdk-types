@@ -15,8 +15,7 @@ const Lib_polyfill_1 = require("../lib/Lib.polyfill");
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 const Common_helper_1 = require("../helpers/Common.helper");
 class A_SDK_Context {
-    constructor() {
-        this.namespace = 'a-sdk';
+    constructor(namespace = 'a-sdk') {
         // Credentials for ADAAS SSO via API
         this.CLIENT_ID = '';
         this.CLIENT_SECRET = '';
@@ -25,6 +24,7 @@ class A_SDK_Context {
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
         this.CONFIG_FRONTEND = false;
+        this.namespace = namespace;
         this.init();
     }
     /**
@@ -65,14 +65,11 @@ class A_SDK_Context {
     get environment() {
         return this.CONFIG_FRONTEND ? 'frontend' : 'server';
     }
-    get clientIdAlias() {
-        return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_CLIENT_ID`;
-    }
-    get clientSecretAlias() {
-        return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_CLIENT_SECRET`;
-    }
-    getConfigurationPropertyAlias(property) {
+    getConfigurationProperty_ENV_Alias(property) {
         return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
+    }
+    getConfigurationProperty_File_Alias(property) {
+        return Common_helper_1.A_SDK_CommonHelper.toCamelCase(property);
     }
     /**
      * Configures the SDK with the provided parameters or uses the default ones
@@ -115,14 +112,15 @@ class A_SDK_Context {
     }
     loadCredentialsFromEnvironment() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.CLIENT_ID = process.env[this.clientIdAlias] || this.CLIENT_ID;
-            this.CLIENT_SECRET = process.env[this.clientSecretAlias] || this.CLIENT_SECRET;
             this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
-            this.CONFIG_SDK_VALIDATION = process.env[this.getConfigurationPropertyAlias('CONFIG_SDK_VALIDATION')] === 'true' || this.CONFIG_SDK_VALIDATION;
-            this.CONFIG_VERBOSE = process.env[this.getConfigurationPropertyAlias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
-            this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationPropertyAlias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;
-            this.CONFIG_FRONTEND = process.env[this.getConfigurationPropertyAlias('CONFIG_FRONTEND')] === 'true' || this.CONFIG_FRONTEND;
-            this.logger.log('Credentials loaded from environment variables');
+            this.CLIENT_ID = process.env[this.getConfigurationProperty_ENV_Alias('CLIENT_ID')] || this.CLIENT_ID;
+            this.CLIENT_SECRET = process.env[this.getConfigurationProperty_ENV_Alias('CLIENT_SECRET')] || this.CLIENT_SECRET;
+            this.CONFIG_SDK_VALIDATION = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_SDK_VALIDATION')] === 'true' || this.CONFIG_SDK_VALIDATION;
+            this.CONFIG_VERBOSE = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
+            this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;
+            this.CONFIG_FRONTEND = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_FRONTEND')] === 'true' || this.CONFIG_FRONTEND;
+            yield this.loadExtendedConfigurationsFromEnvironment();
+            this.logger.log('Credentials loaded from environment variables.');
         });
     }
     loadConfigurationsFromFile() {
@@ -132,16 +130,25 @@ class A_SDK_Context {
                 const data = fs.readFileSync(`${this.namespace}.conf.json`, 'utf8');
                 const config = JSON.parse(data);
                 this.namespace = config.namespace || this.namespace;
-                this.CLIENT_ID = config.client_id || config.clientId || this.CLIENT_ID;
-                this.CLIENT_SECRET = config.client_secret || config.clientSecret || this.CLIENT_SECRET;
-                this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
-                this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
-                this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
-                this.logger.log('Credentials loaded from file');
+                this.CLIENT_ID = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CLIENT_ID;
+                this.CLIENT_SECRET = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CLIENT_SECRET;
+                this.CONFIG_VERBOSE = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_VERBOSE;
+                this.CONFIG_IGNORE_ERRORS = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_IGNORE_ERRORS;
+                this.CONFIG_SDK_VALIDATION = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_SDK_VALIDATION;
+                yield this.loadExtendedConfigurationsFromFile(config);
+                this.logger.log('Credentials loaded from file.');
             }
             catch (error) {
                 this.logger.error(error);
             }
+        });
+    }
+    loadExtendedConfigurationsFromFile(config) {
+        return __awaiter(this, void 0, void 0, function* () {
+        });
+    }
+    loadExtendedConfigurationsFromEnvironment() {
+        return __awaiter(this, void 0, void 0, function* () {
         });
     }
 }

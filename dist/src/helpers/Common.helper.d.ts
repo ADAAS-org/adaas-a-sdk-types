@@ -91,4 +91,5 @@ export declare class A_SDK_CommonHelper {
         version?: string;
     };
     static toUpperSnakeCase(str: string): string;
+    static toCamelCase(str: string): string;
 }

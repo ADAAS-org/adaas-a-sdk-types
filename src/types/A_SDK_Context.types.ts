@@ -29,11 +29,14 @@ export type A_SDK_TYPES__ContextConfigurations = {
 
 export interface A_SDK_TYPES__IContextCredentials {
     /**
-      * API Credentials Client ID
-      */
+     * Api Credentials Client ID to authenticate the SDK
+     * can be skipped for the FrontEnd SDKs
+     */
     client_id: string,
+
     /**
-     * API Credentials Client Secret
+     * Api Credentials Client Secret to authenticate the SDK
+     * can be skipped for the FrontEnd SDKs
      */
     client_secret: string
 }
