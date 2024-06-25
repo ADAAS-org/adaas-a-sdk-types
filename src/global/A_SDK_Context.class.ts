@@ -23,12 +23,12 @@ export class A_SDK_Context {
 
     ready!: Promise<void>;
 
-    protected allowedToReadProperties = [
+    protected defaultAllowedToReadProperties = [
         'CONFIG_SDK_VALIDATION',
         'CONFIG_VERBOSE',
         'CONFIG_IGNORE_ERRORS',
         'CONFIG_FRONTEND',
-    ];
+    ] as const;
 
 
     constructor(
@@ -40,10 +40,10 @@ export class A_SDK_Context {
     }
 
 
-    getConfigurationProperty<T = any, M extends string = typeof this.allowedToReadProperties[number]>(
-        property: M
+    getConfigurationProperty<T = any>(
+        property: typeof this.defaultAllowedToReadProperties[number]
     ): T | undefined {
-        if (this.allowedToReadProperties.includes(property as any))
+        if (this.defaultAllowedToReadProperties.includes(property as any))
             return this[property as string] as T;
 
         return undefined;

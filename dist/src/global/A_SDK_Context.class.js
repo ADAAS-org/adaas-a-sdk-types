@@ -24,7 +24,7 @@ class A_SDK_Context {
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
         this.CONFIG_FRONTEND = false;
-        this.allowedToReadProperties = [
+        this.defaultAllowedToReadProperties = [
             'CONFIG_SDK_VALIDATION',
             'CONFIG_VERBOSE',
             'CONFIG_IGNORE_ERRORS',
@@ -34,7 +34,7 @@ class A_SDK_Context {
         this.init();
     }
     getConfigurationProperty(property) {
-        if (this.allowedToReadProperties.includes(property))
+        if (this.defaultAllowedToReadProperties.includes(property))
             return this[property];
         return undefined;
     }
