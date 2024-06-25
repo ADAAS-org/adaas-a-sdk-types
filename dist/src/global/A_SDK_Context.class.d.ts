@@ -10,7 +10,9 @@ export declare class A_SDK_Context {
     protected CONFIG_IGNORE_ERRORS: boolean;
     protected CONFIG_FRONTEND: boolean;
     ready: Promise<void>;
+    protected _allowedToReadProperties: readonly ["CONFIG_SDK_VALIDATION", "CONFIG_VERBOSE", "CONFIG_IGNORE_ERRORS", "CONFIG_FRONTEND"];
     constructor(namespace?: string);
+    getConfigurationProperty<T = any>(property: typeof this._allowedToReadProperties[number]): T | undefined;
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
      */

@@ -23,12 +23,30 @@ export class A_SDK_Context {
 
     ready!: Promise<void>;
 
+    protected _allowedToReadProperties = [
+        'CONFIG_SDK_VALIDATION',
+        'CONFIG_VERBOSE',
+        'CONFIG_IGNORE_ERRORS',
+        'CONFIG_FRONTEND',
+    ] as const;
+
+
     constructor(
         namespace: string = 'a-sdk'
     ) {
         this.namespace = namespace;
 
         this.init();
+    }
+
+
+    getConfigurationProperty<T = any>(
+        property: typeof this._allowedToReadProperties[number]
+    ): T | undefined {
+        if (this._allowedToReadProperties.includes(property))
+            return this[property] as T;
+
+        return undefined;
     }
 
 

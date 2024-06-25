@@ -24,8 +24,19 @@ class A_SDK_Context {
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
         this.CONFIG_FRONTEND = false;
+        this._allowedToReadProperties = [
+            'CONFIG_SDK_VALIDATION',
+            'CONFIG_VERBOSE',
+            'CONFIG_IGNORE_ERRORS',
+            'CONFIG_FRONTEND',
+        ];
         this.namespace = namespace;
         this.init();
+    }
+    getConfigurationProperty(property) {
+        if (this._allowedToReadProperties.includes(property))
+            return this[property];
+        return undefined;
     }
     /**
      * Initializes the SDK or can be used to reinitialize the SDK

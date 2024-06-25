@@ -30,6 +30,9 @@ export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
 export type A_SDK_TYPES__Dictionary<T> = {
     [Key: string]: T;
 };
+export type A_SDK_TYPES__NonObjectPaths<T> = T extends object ? {
+    [K in keyof T]: `${Exclude<K, symbol>}${""}`;
+}[keyof T] : never;
 export type A_SDK_TYPES__Paths<T> = T extends object ? {
     [K in keyof T]: `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K]>}`}`;
 }[keyof T] : never;

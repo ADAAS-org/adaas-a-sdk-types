@@ -44,6 +44,10 @@ export type A_SDK_TYPES__Dictionary<T> = {
 }
 
 
+export type A_SDK_TYPES__NonObjectPaths<T> = T extends object ? { [K in keyof T]:
+    `${Exclude<K, symbol>}${""}`
+}[keyof T] : never
+
 
 
 export type A_SDK_TYPES__Paths<T> = T extends object ? { [K in keyof T]:
