@@ -3,10 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.A_SDK_DefaultLogger = void 0;
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 class A_SDK_DefaultLogger {
-    constructor(verbose = true, ignoreErrors = false, namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk') {
-        this.verbose = verbose;
-        this.ignoreErrors = ignoreErrors;
-        this.namespace = namespace;
+    constructor(params) {
+        this.verbose = true;
+        this.ignoreErrors = false;
+        this.namespace = 'a-sdk';
+        this.verbose = params.verbose || this.verbose;
+        this.ignoreErrors = params.ignoreErrors || this.ignoreErrors;
+        this.namespace = params.namespace || this.namespace;
     }
     log(...args) {
         if (!this.verbose)

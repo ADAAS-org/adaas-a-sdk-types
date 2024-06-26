@@ -14,23 +14,24 @@ const A_SDK_Logger_class_1 = require("./A_SDK_Logger.class");
 const Lib_polyfill_1 = require("../lib/Lib.polyfill");
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 const Common_helper_1 = require("../helpers/Common.helper");
+const A_SDK_ErrorsProvider_class_1 = require("./A_SDK_ErrorsProvider.class");
 class A_SDK_Context {
-    constructor(namespace = 'a-sdk') {
-        // Credentials for ADAAS SSO via API
+    constructor(params) {
+        this.params = params;
+        // Credentials for ADAAS SDKs from default names as A_SDK_CLIENT_ID, A_SDK_CLIENT_SECRET
         this.CLIENT_ID = '';
         this.CLIENT_SECRET = '';
         // Configuration
         this.CONFIG_SDK_VALIDATION = true;
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
-        this.CONFIG_FRONTEND = false;
+        this.CONFIG_FRONTEND = !!(window && window.location) ? true : false;
         this.defaultAllowedToReadProperties = [
             'CONFIG_SDK_VALIDATION',
             'CONFIG_VERBOSE',
             'CONFIG_IGNORE_ERRORS',
-            'CONFIG_FRONTEND',
         ];
-        this.namespace = namespace;
+        this.namespace = params.namespace || 'a-sdk';
         this.init();
     }
     getConfigurationProperty(property) {
@@ -43,26 +44,46 @@ class A_SDK_Context {
      */
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.loadCredentials();
-            yield this.defaultInit();
+            if (!this.ready)
+                this.ready = new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                    try {
+                        yield this.loadConfigurations();
+                        this.defaultInit();
+                        return resolve();
+                    }
+                    catch (error) {
+                        if (error instanceof A_SDK_Error_class_1.A_SDK_Error) {
+                            this.Logger.error(error);
+                        }
+                        return reject(error);
+                    }
+                }));
+            else
+                yield this.ready;
         });
     }
     defaultInit() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.logger = new A_SDK_Logger_class_1.A_SDK_DefaultLogger(this.verbose, this.ignoreErrors);
-            // global logger configuration
-            if (!this.CONFIG_FRONTEND) {
-                process.on('uncaughtException', (error) => {
-                    // log only in case of A_AUTH_Error
-                    if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
-                        this.logger.error(error);
-                });
-                process.on('unhandledRejection', (error) => {
-                    if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
-                        this.logger.error(error);
-                });
-            }
+        this.Logger = new A_SDK_Logger_class_1.A_SDK_DefaultLogger({
+            verbose: this.CONFIG_VERBOSE,
+            ignoreErrors: this.CONFIG_IGNORE_ERRORS,
+            namespace: this.namespace
         });
+        this.Errors = new A_SDK_ErrorsProvider_class_1.A_SDK_ErrorsProvider({
+            namespace: this.namespace,
+            errors: this.params.errors
+        });
+        // global logger configuration
+        if (!this.CONFIG_FRONTEND) {
+            process.on('uncaughtException', (error) => {
+                // log only in case of A_AUTH_Error
+                if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
+                    this.Logger.error(error);
+            });
+            process.on('unhandledRejection', (error) => {
+                if (error instanceof A_SDK_Error_class_1.A_SDK_Error)
+                    this.Logger.error(error);
+            });
+        }
     }
     get verbose() {
         return this.CONFIG_VERBOSE;
@@ -74,7 +95,7 @@ class A_SDK_Context {
         return this.CONFIG_SDK_VALIDATION;
     }
     get environment() {
-        return this.CONFIG_FRONTEND ? 'frontend' : 'server';
+        return this.CONFIG_FRONTEND ? 'browser' : 'server';
     }
     getConfigurationProperty_ENV_Alias(property) {
         return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
@@ -95,33 +116,28 @@ class A_SDK_Context {
         this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
         this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
         this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
-        this.CONFIG_FRONTEND = config.frontEnd || this.CONFIG_FRONTEND;
-        // reinitialize the SDK
-        this.init();
+        /**
+         * Since configuration properties passed manually we should ignore the loadConfigurations stage
+         */
+        this.defaultInit();
     }
     setCredentials(credentials) {
         this.CLIENT_ID = credentials.client_id;
         this.CLIENT_SECRET = credentials.client_secret;
-        this.logger.log('Credentials set manually');
+        this.Logger.log('Credentials set manually');
     }
-    loadCredentials() {
+    loadConfigurations() {
         return __awaiter(this, void 0, void 0, function* () {
             const fs = yield Lib_polyfill_1.LibPolyfill.fs();
-            if (!this.ready)
-                this.ready = new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
-                    if (!!(process && process.env)) {
-                        yield this.loadCredentialsFromEnvironment();
-                    }
-                    if (fs.existsSync(`${this.namespace}.conf.json`)) {
-                        yield this.loadConfigurationsFromFile();
-                    }
-                    this.init();
-                    resolve();
-                }));
-            return this.ready;
+            if (!!(process && process.env)) {
+                yield this.loadConfigurationsFromEnvironment();
+            }
+            if (fs.existsSync(`${this.namespace}.conf.json`)) {
+                yield this.loadConfigurationsFromFile();
+            }
         });
     }
-    loadCredentialsFromEnvironment() {
+    loadConfigurationsFromEnvironment() {
         return __awaiter(this, void 0, void 0, function* () {
             this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
             this.CLIENT_ID = process.env[this.getConfigurationProperty_ENV_Alias('CLIENT_ID')] || this.CLIENT_ID;
@@ -131,7 +147,7 @@ class A_SDK_Context {
             this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;
             this.CONFIG_FRONTEND = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_FRONTEND')] === 'true' || this.CONFIG_FRONTEND;
             yield this.loadExtendedConfigurationsFromEnvironment();
-            this.logger.log('Credentials loaded from environment variables.');
+            this.Logger.log('Configurations loaded from environment variables.');
         });
     }
     loadConfigurationsFromFile() {
@@ -147,19 +163,34 @@ class A_SDK_Context {
                 this.CONFIG_IGNORE_ERRORS = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_IGNORE_ERRORS;
                 this.CONFIG_SDK_VALIDATION = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_SDK_VALIDATION;
                 yield this.loadExtendedConfigurationsFromFile(config);
-                this.logger.log('Credentials loaded from file.');
+                this.Logger.log('Configurations loaded from file.');
             }
             catch (error) {
-                this.logger.error(error);
+                this.Logger.error(error);
             }
         });
     }
+    /**
+     *  Load extended configurations from file
+     *
+     * @param config
+     * @returns
+     */
     loadExtendedConfigurationsFromFile(config) {
         return __awaiter(this, void 0, void 0, function* () {
+            // override this method to load extended configurations from file
+            return;
         });
     }
+    /**
+     *  Load extended configurations from environment
+     *
+     * @returns
+     */
     loadExtendedConfigurationsFromEnvironment() {
         return __awaiter(this, void 0, void 0, function* () {
+            // override this method to load extended configurations from environment variables
+            return;
         });
     }
 }

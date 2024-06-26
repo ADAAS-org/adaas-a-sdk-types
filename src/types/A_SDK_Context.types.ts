@@ -1,3 +1,12 @@
+import { A_SDK_TYPES__Error } from "./A_SDK_Error.type"
+import { A_SDK_TYPES__Dictionary } from "./common.types"
+
+export type A_SDK_TYPES__ContextConstructor = {
+    namespace: string,
+    errors: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error> | A_SDK_TYPES__Error[]
+}
+
+
 export type A_SDK_TYPES__ContextConfigurations = {
 
     /**
@@ -19,11 +28,6 @@ export type A_SDK_TYPES__ContextConfigurations = {
      * SDK Validation mode
      */
     sdkValidation?: boolean,
-
-    /**
-     * FrontEnd mode: if true, the SDK will be configured for the FrontEnd and will not require API Credentials
-     */
-    frontEnd: boolean
 }
 
 

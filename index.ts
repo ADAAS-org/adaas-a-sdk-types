@@ -44,4 +44,4 @@ import {
     A_SDK_Context
 } from './src/global/A_SDK_Context.class';
 
-export const A_SDK_GlobalContext = new A_SDK_Context();
+export const A_SDK_GlobalContext = new A_SDK_Context({});

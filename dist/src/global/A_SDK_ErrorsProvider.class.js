@@ -8,18 +8,21 @@ const errors_constants_1 = require("../constants/errors.constants");
  * This class helps to organize and manage errors in the SDK.
  */
 class A_SDK_ErrorsProvider {
-    constructor(
-    /**
-     * Namespace for the errors
-     * generally it is the application name or code, should correspond to the namespace of the application
-     */
-    namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk') {
-        this.namespace = namespace;
+    constructor(params) {
+        /**
+         * Namespace for the errors
+         * generally it is the application name or code, should correspond to the namespace of the application
+         */
+        this.namespace = 'a-sdk';
         this.registeredErrors = new Map();
+        this.namespace = params.namespace || this.namespace;
         /**
          * Add default errors to the registry
          */
         this.addRegistry(errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS);
+        if (params.errors) {
+            this.addRegistry(params.errors);
+        }
     }
     /**
      * This method adds a dictionary of errors to the registry.
@@ -57,6 +60,14 @@ class A_SDK_ErrorsProvider {
         else {
             return new A_SDK_Error_class_1.A_SDK_Error(template);
         }
+    }
+    /**
+     * This method throws an error by its code.
+     *
+     * @param code
+     */
+    throw(code) {
+        throw this.getError(code);
     }
 }
 exports.A_SDK_ErrorsProvider = A_SDK_ErrorsProvider;

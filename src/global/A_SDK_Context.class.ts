@@ -1,17 +1,20 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
 import { LibPolyfill } from '../lib/Lib.polyfill'
 import { A_SDK_Error } from "./A_SDK_Error.class";
-import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
+import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
 import { A_SDK_CommonHelper } from '../helpers/Common.helper';
+import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
 
 
 export class A_SDK_Context {
 
-    logger!: A_SDK_DefaultLogger
-
     namespace: string;
 
-    // Credentials for ADAAS SSO via API
+    Logger!: A_SDK_DefaultLogger
+    Errors!: A_SDK_ErrorsProvider
+
+
+    // Credentials for ADAAS SDKs from default names as A_SDK_CLIENT_ID, A_SDK_CLIENT_SECRET
     protected CLIENT_ID: string = '';
     protected CLIENT_SECRET: string = '';
 
@@ -19,7 +22,7 @@ export class A_SDK_Context {
     protected CONFIG_SDK_VALIDATION: boolean = true
     protected CONFIG_VERBOSE: boolean = false;
     protected CONFIG_IGNORE_ERRORS: boolean = false;
-    protected CONFIG_FRONTEND: boolean = false;
+    protected CONFIG_FRONTEND: boolean = !!(window && window.location) ? true : false;
 
     ready!: Promise<void>;
 
@@ -27,15 +30,13 @@ export class A_SDK_Context {
         'CONFIG_SDK_VALIDATION',
         'CONFIG_VERBOSE',
         'CONFIG_IGNORE_ERRORS',
-        'CONFIG_FRONTEND',
     ] as const;
 
 
     constructor(
-        namespace: string = 'a-sdk'
+        protected params: Partial<A_SDK_TYPES__ContextConstructor>
     ) {
-        this.namespace = namespace;
-
+        this.namespace = params.namespace || 'a-sdk';
         this.init();
     }
 
@@ -54,25 +55,47 @@ export class A_SDK_Context {
      * Initializes the SDK or can be used to reinitialize the SDK
      */
     async init() {
-        await this.loadCredentials();
-        await this.defaultInit();
+        if (!this.ready)
+            this.ready = new Promise(async (resolve, reject) => {
+                try {
+                    await this.loadConfigurations();
+                    this.defaultInit();
+
+                    return resolve();
+                } catch (error) {
+                    if (error instanceof A_SDK_Error) {
+                        this.Logger.error(error);
+                    }
+                    return reject(error);
+                }
+            });
+        else
+            await this.ready;
     }
 
 
-    protected async defaultInit() {
-        this.logger = new A_SDK_DefaultLogger(this.verbose, this.ignoreErrors);
+    protected defaultInit() {
+        this.Logger = new A_SDK_DefaultLogger({
+            verbose: this.CONFIG_VERBOSE,
+            ignoreErrors: this.CONFIG_IGNORE_ERRORS,
+            namespace: this.namespace
+        });
+
+        this.Errors = new A_SDK_ErrorsProvider({
+            namespace: this.namespace,
+            errors: this.params.errors
+        });
 
         // global logger configuration
-
         if (!this.CONFIG_FRONTEND) {
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
                 if (error instanceof A_SDK_Error)
-                    this.logger.error(error);
+                    this.Logger.error(error);
             });
             process.on('unhandledRejection', (error) => {
                 if (error instanceof A_SDK_Error)
-                    this.logger.error(error);
+                    this.Logger.error(error);
             });
         }
     }
@@ -89,8 +112,8 @@ export class A_SDK_Context {
         return this.CONFIG_SDK_VALIDATION;
     }
 
-    get environment(): 'server' | 'frontend' {
-        return this.CONFIG_FRONTEND ? 'frontend' : 'server';
+    get environment(): 'server' | 'browser' {
+        return this.CONFIG_FRONTEND ? 'browser' : 'server';
     }
 
     protected getConfigurationProperty_ENV_Alias(property: string): string {
@@ -116,11 +139,12 @@ export class A_SDK_Context {
         this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
         this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
         this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
-        this.CONFIG_FRONTEND = config.frontEnd || this.CONFIG_FRONTEND;
 
 
-        // reinitialize the SDK
-        this.init();
+        /**
+         * Since configuration properties passed manually we should ignore the loadConfigurations stage 
+         */
+        this.defaultInit();
     }
 
 
@@ -130,34 +154,24 @@ export class A_SDK_Context {
         this.CLIENT_ID = credentials.client_id;
         this.CLIENT_SECRET = credentials.client_secret;
 
-        this.logger.log('Credentials set manually');
+        this.Logger.log('Credentials set manually');
     }
 
 
-    private async loadCredentials(): Promise<void> {
+    private async loadConfigurations(): Promise<void> {
         const fs = await LibPolyfill.fs();
 
-        if (!this.ready)
-            this.ready = new Promise(async (resolve) => {
+        if (!!(process && process.env)) {
+            await this.loadConfigurationsFromEnvironment();
+        }
 
-                if (!!(process && process.env)) {
-                    await this.loadCredentialsFromEnvironment();
-                }
-
-                if (fs.existsSync(`${this.namespace}.conf.json`)) {
-                    await this.loadConfigurationsFromFile();
-                }
-
-                this.init();
-
-                resolve();
-            });
-
-        return this.ready;
+        if (fs.existsSync(`${this.namespace}.conf.json`)) {
+            await this.loadConfigurationsFromFile();
+        }
     }
 
 
-    private async loadCredentialsFromEnvironment() {
+    private async loadConfigurationsFromEnvironment() {
         this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
 
 
@@ -171,7 +185,7 @@ export class A_SDK_Context {
 
         await this.loadExtendedConfigurationsFromEnvironment();
 
-        this.logger.log('Credentials loaded from environment variables.');
+        this.Logger.log('Configurations loaded from environment variables.');
     }
 
 
@@ -194,20 +208,33 @@ export class A_SDK_Context {
 
             await this.loadExtendedConfigurationsFromFile(config);
 
-            this.logger.log('Credentials loaded from file.');
+            this.Logger.log('Configurations loaded from file.');
         } catch (error) {
-            this.logger.error(error);
+            this.Logger.error(error);
         }
     }
 
 
 
+    /**
+     *  Load extended configurations from file
+     * 
+     * @param config 
+     * @returns 
+     */
     protected async loadExtendedConfigurationsFromFile<T = any>(config: T) {
-
+        // override this method to load extended configurations from file
+        return;
     }
 
 
+    /**
+     *  Load extended configurations from environment
+     * 
+     * @returns 
+     */
     protected async loadExtendedConfigurationsFromEnvironment() {
-
+        // override this method to load extended configurations from environment variables
+        return;
     }
 }

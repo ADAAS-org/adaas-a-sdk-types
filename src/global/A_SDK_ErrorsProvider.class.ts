@@ -4,26 +4,36 @@ import { A_SDK_ServerError } from "./A_SDK_ServerError.class";
 import { A_SDK_CONSTANTS__DEFAULT_ERRORS, A_SDK_CONSTANTS__ERROR_CODES } from "../constants/errors.constants";
 import { A_SDK_TYPES__Dictionary } from "../types/common.types";
 import { A_SDK_TYPES__ServerError } from "../types/A_SDK_ServerError.types";
+import { A_SDK_TYPES__ErrorsProviderConstructor } from "../types/A_SDK_ErrorsProvider.types";
 
 
 /**
  * This class helps to organize and manage errors in the SDK.
  */
 export class A_SDK_ErrorsProvider {
+    /**
+     * Namespace for the errors
+     * generally it is the application name or code, should correspond to the namespace of the application
+     */
+    protected namespace: string = 'a-sdk'
+
 
     protected registeredErrors: Map<string, A_SDK_TYPES__Error | A_SDK_TYPES__ServerError> = new Map();
 
     constructor(
-        /**
-         * Namespace for the errors
-         * generally it is the application name or code, should correspond to the namespace of the application
-         */
-        protected namespace: string | undefined = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk'
+        params: Partial<A_SDK_TYPES__ErrorsProviderConstructor>
     ) {
+
+        this.namespace = params.namespace || this.namespace;
+
         /**
          * Add default errors to the registry
          */
         this.addRegistry(A_SDK_CONSTANTS__DEFAULT_ERRORS);
+
+        if (params.errors) {
+            this.addRegistry(params.errors);
+        }
     }
 
     /**
@@ -72,5 +82,15 @@ export class A_SDK_ErrorsProvider {
         } else {
             return new A_SDK_Error(template);
         }
+    }
+
+
+    /**
+     * This method throws an error by its code.
+     * 
+     * @param code 
+     */
+    throw(code: A_SDK_CONSTANTS__ERROR_CODES | string) {
+        throw this.getError(code);
     }
 }

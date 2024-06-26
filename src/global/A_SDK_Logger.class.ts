@@ -1,13 +1,18 @@
+import { A_SDK_TYPES__LoggerConstructor } from "../types/A_SDK_Logger.types";
 import { A_SDK_Error } from "./A_SDK_Error.class";
 
 export class A_SDK_DefaultLogger {
 
-    constructor(
-        protected verbose: boolean = true,
-        protected ignoreErrors: boolean = false,
-        protected namespace: string | undefined = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk'
-    ) {
+    protected verbose: boolean = true;
+    protected ignoreErrors: boolean = false;
+    protected namespace: string | undefined = 'a-sdk';
 
+    constructor(
+        params: Partial<A_SDK_TYPES__LoggerConstructor>
+    ) {
+        this.verbose = params.verbose || this.verbose;
+        this.ignoreErrors = params.ignoreErrors || this.ignoreErrors;
+        this.namespace = params.namespace || this.namespace;
     }
 
 

@@ -18,5 +18,5 @@ Object.defineProperty(exports, "A_SDK_DefaultLogger", { enumerable: true, get: f
 var A_SDK_Context_class_1 = require("./src/global/A_SDK_Context.class");
 Object.defineProperty(exports, "A_SDK_Context", { enumerable: true, get: function () { return A_SDK_Context_class_1.A_SDK_Context; } });
 const A_SDK_Context_class_2 = require("./src/global/A_SDK_Context.class");
-exports.A_SDK_GlobalContext = new A_SDK_Context_class_2.A_SDK_Context();
+exports.A_SDK_GlobalContext = new A_SDK_Context_class_2.A_SDK_Context({});
 //# sourceMappingURL=index.js.map
