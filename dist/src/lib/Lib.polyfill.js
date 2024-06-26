@@ -42,17 +42,20 @@ class LibPolyfillClass {
             return this._fs;
         });
     }
+    get env() {
+        let testEnvironment = 'server';
+        try {
+            testEnvironment = !!window.location ? 'browser' : 'server';
+        }
+        catch (error) {
+            console.log('Environment is NodeJS');
+        }
+        return testEnvironment;
+    }
     init() {
         return __awaiter(this, void 0, void 0, function* () {
-            let testEnvironment = 'node';
             try {
-                testEnvironment = !!window.location ? 'browser' : 'node';
-            }
-            catch (error) {
-                console.log('Environment is NodeJS');
-            }
-            try {
-                if (testEnvironment === 'node') {
+                if (this.env === 'server') {
                     this._fs = (yield Promise.resolve().then(() => __importStar(require('fs'))));
                 }
                 else {

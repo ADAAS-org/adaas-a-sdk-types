@@ -22,7 +22,6 @@ export class A_SDK_Context {
     protected CONFIG_SDK_VALIDATION: boolean = true
     protected CONFIG_VERBOSE: boolean = false;
     protected CONFIG_IGNORE_ERRORS: boolean = false;
-    protected CONFIG_FRONTEND: boolean = !!(window && window.location) ? true : false;
 
     ready!: Promise<void>;
 
@@ -87,7 +86,7 @@ export class A_SDK_Context {
         });
 
         // global logger configuration
-        if (!this.CONFIG_FRONTEND) {
+        if (this.environment === 'server') {
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
                 if (error instanceof A_SDK_Error)
@@ -113,7 +112,7 @@ export class A_SDK_Context {
     }
 
     get environment(): 'server' | 'browser' {
-        return this.CONFIG_FRONTEND ? 'browser' : 'server';
+        return LibPolyfill.env;
     }
 
     protected getConfigurationProperty_ENV_Alias(property: string): string {
@@ -181,7 +180,6 @@ export class A_SDK_Context {
         this.CONFIG_SDK_VALIDATION = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_SDK_VALIDATION')] === 'true' || this.CONFIG_SDK_VALIDATION;
         this.CONFIG_VERBOSE = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
         this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;
-        this.CONFIG_FRONTEND = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_FRONTEND')] === 'true' || this.CONFIG_FRONTEND;
 
         await this.loadExtendedConfigurationsFromEnvironment();
 

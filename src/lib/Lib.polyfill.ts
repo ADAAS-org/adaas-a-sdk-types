@@ -17,17 +17,24 @@ class LibPolyfillClass {
     }
 
 
-    private async init() {
-        let testEnvironment = 'node';
+    get env(): 'server' | 'browser' {
+        let testEnvironment: 'server' | 'browser' = 'server';
 
         try {
-            testEnvironment = !!window.location ? 'browser' : 'node';
+            testEnvironment = !!window.location ? 'browser' : 'server';
         } catch (error) {
             console.log('Environment is NodeJS')
         }
 
+        return testEnvironment;
+    }
+
+
+    private async init() {
+
+
         try {
-            if (testEnvironment === 'node') {
+            if (this.env === 'server') {
                 this._fs = await import('fs') as Ifspolyfill;
             }
             else {

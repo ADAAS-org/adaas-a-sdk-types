@@ -5,6 +5,7 @@ interface Ifspolyfill {
 declare class LibPolyfillClass {
     private _fs;
     fs(): Promise<Ifspolyfill>;
+    get env(): 'server' | 'browser';
     private init;
 }
 export declare const LibPolyfill: LibPolyfillClass;

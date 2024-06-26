@@ -11,7 +11,6 @@ export declare class A_SDK_Context {
     protected CONFIG_SDK_VALIDATION: boolean;
     protected CONFIG_VERBOSE: boolean;
     protected CONFIG_IGNORE_ERRORS: boolean;
-    protected CONFIG_FRONTEND: boolean;
     ready: Promise<void>;
     protected defaultAllowedToReadProperties: readonly ["CONFIG_SDK_VALIDATION", "CONFIG_VERBOSE", "CONFIG_IGNORE_ERRORS"];
     constructor(params: Partial<A_SDK_TYPES__ContextConstructor>);
