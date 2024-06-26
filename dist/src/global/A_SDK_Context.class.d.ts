@@ -1,16 +1,25 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
 import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
-export declare class A_SDK_Context {
+export declare class A_SDK_ContextClass {
     protected params: Partial<A_SDK_TYPES__ContextConstructor>;
     namespace: string;
-    Logger: A_SDK_DefaultLogger;
-    Errors: A_SDK_ErrorsProvider;
     protected CLIENT_ID: string;
     protected CLIENT_SECRET: string;
     protected CONFIG_SDK_VALIDATION: boolean;
     protected CONFIG_VERBOSE: boolean;
     protected CONFIG_IGNORE_ERRORS: boolean;
+    /**
+     * Logger for the SDK inside namespace
+     */
+    Logger: A_SDK_DefaultLogger;
+    /**
+     * Errors Provider for the SDK inside namespace
+     */
+    Errors: A_SDK_ErrorsProvider;
+    /**
+     * Ready Promise to ensure the SDK is ready to use
+     */
     ready: Promise<void>;
     protected defaultAllowedToReadProperties: readonly ["CONFIG_SDK_VALIDATION", "CONFIG_VERBOSE", "CONFIG_IGNORE_ERRORS"];
     constructor(params: Partial<A_SDK_TYPES__ContextConstructor>);
@@ -53,3 +62,4 @@ export declare class A_SDK_Context {
      */
     protected loadExtendedConfigurationsFromEnvironment(): Promise<void>;
 }
+export declare const A_SDK_Context: A_SDK_ContextClass;

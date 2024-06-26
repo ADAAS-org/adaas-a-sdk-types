@@ -27,7 +27,7 @@ export class A_SDK_ServerError extends A_SDK_Error {
             const target = error as A_SDK_TYPES__ServerError;
 
             this.message = target.message;
-            this.code = A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR;
+            this.code = target.code;
             this.description = target.description;
             this.serverCode = target.serverCode;
             this.originalError = target.originalError;

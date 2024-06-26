@@ -12,8 +12,6 @@ describe('CommonHelper Tests', () => {
 
         try {
             const scheduler = A_SDK_CommonHelper.schedule(3000, async () => {
-                console.log('RESOLVED');
-
                 return 'RESOLVED';
             });
 
@@ -40,8 +38,6 @@ describe('CommonHelper Tests', () => {
 
         try {
             const scheduler = A_SDK_CommonHelper.schedule(3000, async () => {
-                console.log('RESOLVED');
-
                 return 'RESOLVED';
             });
 
@@ -49,7 +45,6 @@ describe('CommonHelper Tests', () => {
             scheduler.clear();
             res = await scheduler.promise;
         } catch (error) {
-            console.log('ERR: ', error)
             // Handle error if any
         } finally {
             const end = Date.now();

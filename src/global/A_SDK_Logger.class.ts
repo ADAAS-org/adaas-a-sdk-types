@@ -5,7 +5,7 @@ export class A_SDK_DefaultLogger {
 
     protected verbose: boolean = true;
     protected ignoreErrors: boolean = false;
-    protected namespace: string | undefined = 'a-sdk';
+    protected namespace: string = 'a-sdk';
 
     constructor(
         params: Partial<A_SDK_TYPES__LoggerConstructor>
@@ -37,22 +37,31 @@ export class A_SDK_DefaultLogger {
         const firstArg = args[0];
 
         if (firstArg instanceof A_SDK_Error)
-            this.logADAASError(firstArg)
+            this.log_A_SDK_Error(firstArg)
         else
             console.log('\x1b[31m%s\x1b[0m', `[${this.namespace} ERROR] |${this.getTime()}| `, ...args)
     }
 
 
-    protected logADAASError(error: A_SDK_Error) {
+    protected log_A_SDK_Error(error: A_SDK_Error) {
         const time = this.getTime();
 
-        console.log('\x1b[31m%s\x1b[0m', `==================== ADAAS ERROR ==================`);
-        console.log('\x1b[31m%s\x1b[0m', `[${this.namespace}] |${time}| ERROR:message     -> `, error.message);
-        console.log('\x1b[31m%s\x1b[0m', `[${this.namespace}] |${time}| ERROR:code        -> `, error.code);
-        console.log('\x1b[31m%s\x1b[0m', `[${this.namespace}] |${time}| ERROR:description -> `, error.description);
-        if (error.link)
-            console.log('\x1b[31m%s\x1b[0m', `[${this.namespace}] |${time}| Read in docs:        `, error.link);
-        console.log('\x1b[31m%s\x1b[0m', `===================================================`);
+        console.log(`\x1b[31m[${this.namespace}] |${time}| ERROR ${error.code}
+${' '.repeat(this.namespace.length + 3)}| ${error.message}
+${' '.repeat(this.namespace.length + 3)}| ${error.description} 
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+${' '.repeat(this.namespace.length + 3)}| ${error.stack?.split('\n').map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`).join('\n') || 'No stack trace'}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+\x1b[0m`
+            + (error.originalError ? `\x1b[31m${' '.repeat(this.namespace.length + 3)}| Wrapped From  ${error.originalError.message}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+${' '.repeat(this.namespace.length + 3)}| ${error.originalError.stack?.split('\n').map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`).join('\n') || 'No stack trace'}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+\x1b[0m`: '')
+            + (error.link ? `\x1b[31m${' '.repeat(this.namespace.length + 3)}| Read in docs: ${error.link}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+\x1b[0m`: ''));
+
     }
 
 

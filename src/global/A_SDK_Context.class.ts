@@ -6,12 +6,9 @@ import { A_SDK_CommonHelper } from '../helpers/Common.helper';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
 
 
-export class A_SDK_Context {
+export class A_SDK_ContextClass {
 
     namespace: string;
-
-    Logger!: A_SDK_DefaultLogger
-    Errors!: A_SDK_ErrorsProvider
 
 
     // Credentials for ADAAS SDKs from default names as A_SDK_CLIENT_ID, A_SDK_CLIENT_SECRET
@@ -23,7 +20,23 @@ export class A_SDK_Context {
     protected CONFIG_VERBOSE: boolean = false;
     protected CONFIG_IGNORE_ERRORS: boolean = false;
 
+
+
+    /**
+     * Logger for the SDK inside namespace
+     */
+    Logger: A_SDK_DefaultLogger;
+    /**
+     * Errors Provider for the SDK inside namespace 
+     */
+    Errors: A_SDK_ErrorsProvider;
+
+
+    /**
+     * Ready Promise to ensure the SDK is ready to use
+     */
     ready!: Promise<void>;
+
 
     protected defaultAllowedToReadProperties = [
         'CONFIG_SDK_VALIDATION',
@@ -36,6 +49,13 @@ export class A_SDK_Context {
         protected params: Partial<A_SDK_TYPES__ContextConstructor>
     ) {
         this.namespace = params.namespace || 'a-sdk';
+        this.Logger = new A_SDK_DefaultLogger({
+            namespace: this.namespace
+        });
+        this.Errors = new A_SDK_ErrorsProvider({
+            namespace: this.namespace,
+        })
+
         this.init();
     }
 
@@ -58,6 +78,7 @@ export class A_SDK_Context {
             this.ready = new Promise(async (resolve, reject) => {
                 try {
                     await this.loadConfigurations();
+
                     this.defaultInit();
 
                     return resolve();
@@ -236,3 +257,7 @@ export class A_SDK_Context {
         return;
     }
 }
+
+
+
+export const A_SDK_Context = new A_SDK_ContextClass({});

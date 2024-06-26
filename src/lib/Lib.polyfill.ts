@@ -23,7 +23,7 @@ class LibPolyfillClass {
         try {
             testEnvironment = !!window.location ? 'browser' : 'server';
         } catch (error) {
-            console.log('Environment is NodeJS')
+            testEnvironment = 'server';
         }
 
         return testEnvironment;

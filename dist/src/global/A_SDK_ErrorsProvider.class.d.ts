@@ -5,6 +5,7 @@ import { A_SDK_CONSTANTS__ERROR_CODES } from "../constants/errors.constants";
 import { A_SDK_TYPES__Dictionary } from "../types/common.types";
 import { A_SDK_TYPES__ServerError } from "../types/A_SDK_ServerError.types";
 import { A_SDK_TYPES__ErrorsProviderConstructor } from "../types/A_SDK_ErrorsProvider.types";
+import { AxiosError } from "axios";
 /**
  * This class helps to organize and manage errors in the SDK.
  */
@@ -42,4 +43,11 @@ export declare class A_SDK_ErrorsProvider {
      * @param code
      */
     throw(code: A_SDK_CONSTANTS__ERROR_CODES | string): never;
+    /**
+     *  This method wraps an error into the SDK error object.
+     *
+     * @param error
+     * @returns
+     */
+    wrap(error: Error | AxiosError | A_SDK_Error | unknown): A_SDK_ServerError | A_SDK_Error;
 }

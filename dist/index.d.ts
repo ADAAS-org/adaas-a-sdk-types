@@ -8,7 +8,5 @@ export { A_SDK_TYPES__DeepPartial, A_SDK_TYPES__Dictionary, A_SDK_TYPES__ObjectK
 export { A_SDK_TYPES__IAEntity } from './src/types/A_Entity.types';
 export { A_SDK_TYPES__IDefaultPagination, A_SDK_TYPES__IRequestFilter, A_SDK_TYPES__IRequestPagination } from './src/types/A_SDK_ApiProvider.types';
 export { A_SDK_DefaultLogger } from './src/global/A_SDK_Logger.class';
-export { A_SDK_Context } from './src/global/A_SDK_Context.class';
+export { A_SDK_ContextClass, A_SDK_Context } from './src/global/A_SDK_Context.class';
 export { A_SDK_TYPES__ContextConfigurations } from './src/types/A_SDK_Context.types';
-import { A_SDK_Context } from './src/global/A_SDK_Context.class';
-export declare const A_SDK_GlobalContext: A_SDK_Context;

@@ -16,13 +16,14 @@ exports.A_SDK_CONSTANTS__DEFAULT_ERRORS = {
         serverCode: 500,
         code: A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR,
         description: 'If you see this error please let us know.',
-        message: 'Oops... Something went wrong'
+        message: 'Oops... Something went wrong',
     },
     METHOD_NOT_IMPLEMENTED: {
         serverCode: 500,
         code: A_SDK_CONSTANTS__ERROR_CODES.METHOD_NOT_IMPLEMENTED,
         description: 'If you see this error please let us know.',
-        message: 'Oops... Something went wrong'
+        message: 'Oops... Something went wrong',
+        link: 'https://support.adaas.org/error/' + A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR
     },
     ROUTE_NOT_FOUND: {
         serverCode: 404,

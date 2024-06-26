@@ -51,9 +51,9 @@ class A_SDK_ErrorsProvider {
      * @returns
      */
     getError(code) {
-        const template = this.registeredErrors.get(code);
+        let template = this.registeredErrors.get(code);
         if (!template)
-            return;
+            template = this.registeredErrors.get(errors_constants_1.A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR);
         if (template.serverCode) {
             return new A_SDK_ServerError_class_1.A_SDK_ServerError(template);
         }
@@ -67,7 +67,20 @@ class A_SDK_ErrorsProvider {
      * @param code
      */
     throw(code) {
-        throw this.getError(code);
+        const err = this.getError(code);
+        throw err;
+    }
+    /**
+     *  This method wraps an error into the SDK error object.
+     *
+     * @param error
+     * @returns
+     */
+    wrap(error) {
+        if (error instanceof A_SDK_Error_class_1.A_SDK_Error) {
+            return new A_SDK_ServerError_class_1.A_SDK_ServerError(error);
+        }
+        return new A_SDK_Error_class_1.A_SDK_Error(error);
     }
 }
 exports.A_SDK_ErrorsProvider = A_SDK_ErrorsProvider;

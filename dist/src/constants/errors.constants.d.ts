@@ -18,6 +18,7 @@ export declare const A_SDK_CONSTANTS__DEFAULT_ERRORS: {
         code: A_SDK_CONSTANTS__ERROR_CODES;
         description: string;
         message: string;
+        link: string;
     };
     ROUTE_NOT_FOUND: {
         serverCode: number;

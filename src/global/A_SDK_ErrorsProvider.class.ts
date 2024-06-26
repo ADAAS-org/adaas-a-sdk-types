@@ -5,7 +5,7 @@ import { A_SDK_CONSTANTS__DEFAULT_ERRORS, A_SDK_CONSTANTS__ERROR_CODES } from ".
 import { A_SDK_TYPES__Dictionary } from "../types/common.types";
 import { A_SDK_TYPES__ServerError } from "../types/A_SDK_ServerError.types";
 import { A_SDK_TYPES__ErrorsProviderConstructor } from "../types/A_SDK_ErrorsProvider.types";
-
+import { AxiosError } from "axios";
 
 /**
  * This class helps to organize and manage errors in the SDK.
@@ -15,8 +15,7 @@ export class A_SDK_ErrorsProvider {
      * Namespace for the errors
      * generally it is the application name or code, should correspond to the namespace of the application
      */
-    protected namespace: string = 'a-sdk'
-
+    protected namespace: string = 'a-sdk';
 
     protected registeredErrors: Map<string, A_SDK_TYPES__Error | A_SDK_TYPES__ServerError> = new Map();
 
@@ -73,9 +72,10 @@ export class A_SDK_ErrorsProvider {
      * @returns 
      */
     getError(code: A_SDK_CONSTANTS__ERROR_CODES | string): A_SDK_ServerError | A_SDK_Error | undefined {
-        const template = this.registeredErrors.get(code);
+        let template = this.registeredErrors.get(code);
 
-        if (!template) return;
+        if (!template)
+            template = this.registeredErrors.get(A_SDK_CONSTANTS__ERROR_CODES.UNEXPECTED_ERROR);
 
         if ((template as A_SDK_TYPES__ServerError).serverCode) {
             return new A_SDK_ServerError(template as A_SDK_TYPES__ServerError);
@@ -91,6 +91,24 @@ export class A_SDK_ErrorsProvider {
      * @param code 
      */
     throw(code: A_SDK_CONSTANTS__ERROR_CODES | string): never {
-        throw this.getError(code);
+
+        const err = this.getError(code);
+
+        throw err;
+    }
+
+
+    /**
+     *  This method wraps an error into the SDK error object.
+     * 
+     * @param error 
+     * @returns 
+     */
+    wrap(error: Error | AxiosError | A_SDK_Error | unknown): A_SDK_ServerError | A_SDK_Error {
+        if (error instanceof A_SDK_Error) {
+            return new A_SDK_ServerError(error);
+        }
+
+        return new A_SDK_Error(error);
     }
 }

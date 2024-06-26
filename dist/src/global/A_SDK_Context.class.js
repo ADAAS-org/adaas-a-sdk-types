@@ -9,13 +9,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.A_SDK_Context = void 0;
+exports.A_SDK_Context = exports.A_SDK_ContextClass = void 0;
 const A_SDK_Logger_class_1 = require("./A_SDK_Logger.class");
 const Lib_polyfill_1 = require("../lib/Lib.polyfill");
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 const Common_helper_1 = require("../helpers/Common.helper");
 const A_SDK_ErrorsProvider_class_1 = require("./A_SDK_ErrorsProvider.class");
-class A_SDK_Context {
+class A_SDK_ContextClass {
     constructor(params) {
         this.params = params;
         // Credentials for ADAAS SDKs from default names as A_SDK_CLIENT_ID, A_SDK_CLIENT_SECRET
@@ -31,6 +31,12 @@ class A_SDK_Context {
             'CONFIG_IGNORE_ERRORS',
         ];
         this.namespace = params.namespace || 'a-sdk';
+        this.Logger = new A_SDK_Logger_class_1.A_SDK_DefaultLogger({
+            namespace: this.namespace
+        });
+        this.Errors = new A_SDK_ErrorsProvider_class_1.A_SDK_ErrorsProvider({
+            namespace: this.namespace,
+        });
         this.init();
     }
     getConfigurationProperty(property) {
@@ -192,5 +198,6 @@ class A_SDK_Context {
         });
     }
 }
-exports.A_SDK_Context = A_SDK_Context;
+exports.A_SDK_ContextClass = A_SDK_ContextClass;
+exports.A_SDK_Context = new A_SDK_ContextClass({});
 //# sourceMappingURL=A_SDK_Context.class.js.map
