@@ -41,5 +41,5 @@ export declare class A_SDK_ErrorsProvider {
      *
      * @param code
      */
-    throw(code: A_SDK_CONSTANTS__ERROR_CODES | string): void;
+    throw(code: A_SDK_CONSTANTS__ERROR_CODES | string): never;
 }

@@ -90,7 +90,7 @@ export class A_SDK_ErrorsProvider {
      * 
      * @param code 
      */
-    throw(code: A_SDK_CONSTANTS__ERROR_CODES | string) {
+    throw(code: A_SDK_CONSTANTS__ERROR_CODES | string): never {
         throw this.getError(code);
     }
 }
