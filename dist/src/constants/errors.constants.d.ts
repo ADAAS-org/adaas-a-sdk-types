@@ -4,7 +4,8 @@ export declare enum A_SDK_CONSTANTS__ERROR_CODES {
     ROUTE_NOT_FOUND = "ERR-0003",
     TOKEN_NOT_PROVIDED = "ERR-0004",
     NOT_ALL_PARAMS_WAS_PROVIDED = "ERR-0005",
-    CREDENTIALS_NOT_PROVIDED = "ERR-0006"
+    CREDENTIALS_NOT_PROVIDED = "ERR-0006",
+    CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ = "ERR-0007"
 }
 export declare const A_SDK_CONSTANTS__DEFAULT_ERRORS: {
     UNEXPECTED_ERROR: {
@@ -39,6 +40,12 @@ export declare const A_SDK_CONSTANTS__DEFAULT_ERRORS: {
         message: string;
     };
     CREDENTIALS_NOT_PROVIDED: {
+        code: A_SDK_CONSTANTS__ERROR_CODES;
+        description: string;
+        message: string;
+    };
+    CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ: {
+        serverCode: number;
         code: A_SDK_CONSTANTS__ERROR_CODES;
         description: string;
         message: string;

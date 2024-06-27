@@ -1,9 +1,14 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
 import { LibPolyfill } from '../lib/Lib.polyfill'
 import { A_SDK_Error } from "./A_SDK_Error.class";
-import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
+import {
+    A_SDK_TYPES__ContextConfigurations,
+    A_SDK_TYPES__ContextConstructor,
+    A_SDK_TYPES__IContextCredentials
+} from '../types/A_SDK_Context.types';
 import { A_SDK_CommonHelper } from '../helpers/Common.helper';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
+import { A_SDK_CONSTANTS__DEFAULT_ERRORS, A_SDK_CONSTANTS__ERROR_CODES } from "../constants/errors.constants";
 
 
 export class A_SDK_ContextClass {
@@ -62,11 +67,11 @@ export class A_SDK_ContextClass {
 
     getConfigurationProperty<T = any>(
         property: typeof this.defaultAllowedToReadProperties[number]
-    ): T | undefined {
+    ): T {
         if (this.defaultAllowedToReadProperties.includes(property as any))
             return this[property as string] as T;
 
-        return undefined;
+        this.Errors.throw(A_SDK_CONSTANTS__ERROR_CODES.CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ)
     }
 
 

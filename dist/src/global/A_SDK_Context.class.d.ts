@@ -23,7 +23,7 @@ export declare class A_SDK_ContextClass {
     ready: Promise<void>;
     protected defaultAllowedToReadProperties: readonly ["CONFIG_SDK_VALIDATION", "CONFIG_VERBOSE", "CONFIG_IGNORE_ERRORS"];
     constructor(params: Partial<A_SDK_TYPES__ContextConstructor>);
-    getConfigurationProperty<T = any>(property: typeof this.defaultAllowedToReadProperties[number]): T | undefined;
+    getConfigurationProperty<T = any>(property: typeof this.defaultAllowedToReadProperties[number]): T;
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
      */

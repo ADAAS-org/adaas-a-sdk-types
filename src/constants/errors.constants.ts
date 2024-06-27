@@ -6,6 +6,7 @@ export enum A_SDK_CONSTANTS__ERROR_CODES {
     TOKEN_NOT_PROVIDED = 'ERR-0004',
     NOT_ALL_PARAMS_WAS_PROVIDED = 'ERR-0005',
     CREDENTIALS_NOT_PROVIDED = 'ERR-0006',
+    CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ = 'ERR-0007',
 };
 
 
@@ -46,5 +47,11 @@ export const A_SDK_CONSTANTS__DEFAULT_ERRORS = {
         description: 'The credentials are missed. Please make sure that they are presented.',
         message: 'Credentials has not found in the request.'
     },
+    CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ: {
+        serverCode: 403,
+        code: A_SDK_CONSTANTS__ERROR_CODES.CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ,
+        description: 'The configuration property is not exists or not allowed to read.',
+        message: 'Configuration property is not exists or not allowed to read.'
+    }
 
 }

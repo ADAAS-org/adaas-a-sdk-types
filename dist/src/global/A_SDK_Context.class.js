@@ -15,6 +15,7 @@ const Lib_polyfill_1 = require("../lib/Lib.polyfill");
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 const Common_helper_1 = require("../helpers/Common.helper");
 const A_SDK_ErrorsProvider_class_1 = require("./A_SDK_ErrorsProvider.class");
+const errors_constants_1 = require("../constants/errors.constants");
 class A_SDK_ContextClass {
     constructor(params) {
         this.params = params;
@@ -42,7 +43,7 @@ class A_SDK_ContextClass {
     getConfigurationProperty(property) {
         if (this.defaultAllowedToReadProperties.includes(property))
             return this[property];
-        return undefined;
+        this.Errors.throw(errors_constants_1.A_SDK_CONSTANTS__ERROR_CODES.CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ);
     }
     /**
      * Initializes the SDK or can be used to reinitialize the SDK
