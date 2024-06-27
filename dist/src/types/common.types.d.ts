@@ -45,3 +45,11 @@ export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SD
     };
 }[number]>;
 export type A_SDK_TYPES__Required<T, arr extends (A_SDK_TYPES__Paths<T>)[] = (A_SDK_TYPES__Paths<T>)[]> = A_SDK_TYPES__PathsToObject<T, arr> & T;
+export type A_SDK_TYPES__ExtractNested<T, P extends string> = P extends `${infer K}.${infer Rest}` ? K extends keyof T ? {
+    [Key in K]: A_SDK_TYPES__ExtractNested<T[K], Rest>;
+} : never : P extends keyof T ? {
+    [Key in P]: T[P];
+} : never;
+export type A_SDK_TYPES__ExtractProperties<T, P extends string[]> = A_SDK_TYPES__UnionToIntersection<{
+    [K in keyof P]: P[K] extends string ? A_SDK_TYPES__ExtractNested<T, P[K]> : never;
+}[number]>;
