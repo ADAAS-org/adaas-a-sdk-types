@@ -50,6 +50,6 @@ export type A_SDK_TYPES__ExtractNested<T, P extends string> = P extends `${infer
 } : never : P extends keyof T ? {
     [Key in P]: T[P];
 } : never;
-export type A_SDK_TYPES__ExtractProperties<T, P extends string[]> = A_SDK_TYPES__UnionToIntersection<{
+export type A_SDK_TYPES__ExtractProperties<T, P extends A_SDK_TYPES__Paths<T>[]> = A_SDK_TYPES__UnionToIntersection<{
     [K in keyof P]: P[K] extends string ? A_SDK_TYPES__ExtractNested<T, P[K]> : never;
 }[number]>;

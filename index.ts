@@ -14,7 +14,8 @@ export {
     A_SDK_TYPES__Required,
     A_SDK_TYPES__Paths,
     A_SDK_TYPES__PathsToObject,
-    A_SDK_TYPES__UnionToIntersection
+    A_SDK_TYPES__UnionToIntersection,
+    A_SDK_TYPES__ExtractProperties
 
 } from './src/types/common.types';
 
