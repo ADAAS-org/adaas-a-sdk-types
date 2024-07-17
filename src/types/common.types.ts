@@ -49,10 +49,13 @@ export type A_SDK_TYPES__NonObjectPaths<T> = T extends object ? { [K in keyof T]
 }[keyof T] : never
 
 
+type Decrement = [never, 0, 1, 2, 3, 4, 5];
 
-export type A_SDK_TYPES__Paths<T> = T extends object ? { [K in keyof T]:
-    `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K]>}`}`
-}[keyof T] : never
+export type A_SDK_TYPES__Paths<T, D extends number = 5> = [D] extends [never] ? never : (
+  T extends object ? { [K in keyof T]:
+    `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K], Decrement[D]>}`}`
+  }[keyof T] : never
+);
 
 export type A_SDK_TYPES__UnionToIntersection<U> =
     (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
