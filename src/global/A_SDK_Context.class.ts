@@ -53,7 +53,11 @@ export class A_SDK_ContextClass {
     constructor(
         protected params: Partial<A_SDK_TYPES__ContextConstructor>
     ) {
-        this.namespace = params.namespace || 'a-sdk';
+
+        this.namespace = params.namespace
+            ? params.namespace
+            : (process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk');
+
         this.Logger = new A_SDK_DefaultLogger({
             namespace: this.namespace
         });
@@ -197,8 +201,6 @@ export class A_SDK_ContextClass {
 
 
     private async loadConfigurationsFromEnvironment() {
-        this.namespace = process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || this.namespace;
-
 
         this.CLIENT_ID = process.env[this.getConfigurationProperty_ENV_Alias('CLIENT_ID')] || this.CLIENT_ID;
         this.CLIENT_SECRET = process.env[this.getConfigurationProperty_ENV_Alias('CLIENT_SECRET')] || this.CLIENT_SECRET;
@@ -220,8 +222,6 @@ export class A_SDK_ContextClass {
             const data = fs.readFileSync(`${this.namespace}.conf.json`, 'utf8');
 
             const config = JSON.parse(data);
-
-            this.namespace = config.namespace || this.namespace;
 
             this.CLIENT_ID = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CLIENT_ID;
             this.CLIENT_SECRET = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CLIENT_SECRET;
