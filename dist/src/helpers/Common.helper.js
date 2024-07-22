@@ -126,6 +126,32 @@ class A_SDK_CommonHelper {
     static toCamelCase(str) {
         return str.toLowerCase().replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     }
+    static isObject(item) {
+        return item !== null && typeof item === 'object' && !Array.isArray(item);
+    }
+    static deepMerge(target, source, visited = new Map()) {
+        if (this.isObject(target) && this.isObject(source)) {
+            for (const key in source) {
+                if (this.isObject(source[key])) {
+                    if (!target[key]) {
+                        target[key] = {};
+                    }
+                    // Check if the source object has already been visited
+                    if (!visited.has(source[key])) {
+                        visited.set(source[key], {});
+                        this.deepMerge(target[key], source[key], visited);
+                    }
+                    else {
+                        target[key] = visited.get(source[key]);
+                    }
+                }
+                else {
+                    target[key] = source[key];
+                }
+            }
+        }
+        return target;
+    }
 }
 exports.A_SDK_CommonHelper = A_SDK_CommonHelper;
 A_SDK_CommonHelper.aseidRegexp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`);

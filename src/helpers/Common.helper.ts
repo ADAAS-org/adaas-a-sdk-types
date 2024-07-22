@@ -236,4 +236,32 @@ export class A_SDK_CommonHelper {
     static toCamelCase(str: string): string {
         return str.toLowerCase().replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     }
+
+
+
+    static isObject(item: any): boolean {
+        return item !== null && typeof item === 'object' && !Array.isArray(item);
+    }
+
+    static deepMerge<T = any>(target: any, source: any, visited = new Map<any, any>()): T {
+        if (this.isObject(target) && this.isObject(source)) {
+            for (const key in source) {
+                if (this.isObject(source[key])) {
+                    if (!target[key]) {
+                        target[key] = {};
+                    }
+                    // Check if the source object has already been visited
+                    if (!visited.has(source[key])) {
+                        visited.set(source[key], {});
+                        this.deepMerge(target[key], source[key], visited);
+                    } else {
+                        target[key] = visited.get(source[key]);
+                    }
+                } else {
+                    target[key] = source[key];
+                }
+            }
+        }
+        return target;
+    }
 }

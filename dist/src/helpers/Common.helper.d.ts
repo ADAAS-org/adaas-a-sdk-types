@@ -95,4 +95,6 @@ export declare class A_SDK_CommonHelper {
     };
     static toUpperSnakeCase(str: string): string;
     static toCamelCase(str: string): string;
+    static isObject(item: any): boolean;
+    static deepMerge<T = any>(target: any, source: any, visited?: Map<any, any>): T;
 }
