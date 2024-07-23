@@ -21,8 +21,11 @@ export type A_AUTH_RequestParam = {
      */
     value: string;
 };
-export type A_SDK_TYPES__DeepPartial<T> = {
-    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__DeepPartial<T[P]> : T[P];
+type Primitive = string | number | boolean | bigint | symbol | null | undefined;
+export type A_SDK_TYPES__DeepPartial<T, D extends number = 5> = [
+    D
+] extends [never] ? never : T extends Primitive ? T : {
+    [P in keyof T]?: T[P] extends Primitive ? T[P] : A_SDK_TYPES__DeepPartial<T[P], Decrement[D]>;
 };
 export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
     [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
@@ -33,9 +36,10 @@ export type A_SDK_TYPES__Dictionary<T> = {
 export type A_SDK_TYPES__NonObjectPaths<T> = T extends object ? {
     [K in keyof T]: `${Exclude<K, symbol>}${""}`;
 }[keyof T] : never;
-export type A_SDK_TYPES__Paths<T> = T extends object ? {
-    [K in keyof T]: `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K]>}`}`;
-}[keyof T] : never;
+type Decrement = [never, 0, 1, 2, 3, 4, 5];
+export type A_SDK_TYPES__Paths<T, D extends number = 5> = [D] extends [never] ? never : (T extends object ? {
+    [K in keyof T]: `${Exclude<K, symbol>}${"" | `.${A_SDK_TYPES__Paths<T[K], Decrement[D]>}`}`;
+}[keyof T] : never);
 export type A_SDK_TYPES__UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (k: infer I) => void ? I : never;
 export type A_SDK_TYPES__PathsToObject<_Obj, T extends readonly string[]> = A_SDK_TYPES__UnionToIntersection<{
     [K in keyof T]: T[K] extends `${infer Key}.${infer Rest}` ? {
@@ -53,3 +57,4 @@ export type A_SDK_TYPES__ExtractNested<T, P extends string> = P extends `${infer
 export type A_SDK_TYPES__ExtractProperties<T, P extends A_SDK_TYPES__Paths<T>[]> = A_SDK_TYPES__UnionToIntersection<{
     [K in keyof P]: P[K] extends string ? A_SDK_TYPES__ExtractNested<T, P[K]> : never;
 }[number]>;
+export {};
