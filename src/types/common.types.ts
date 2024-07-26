@@ -37,7 +37,9 @@ export type A_SDK_TYPES__DeepPartial<T, D extends number = 5> = {
     [P in keyof Required<T>]?:
     [D] extends [never] ? never :
 
-    Required<T>[P] extends object
+    Required<T>[P] extends Array<infer U>
+    ? Array<A_SDK_TYPES__DeepPartial<U, Decrement[D]>>
+    : Required<T>[P] extends object
     ? A_SDK_TYPES__DeepPartial<T[P], Decrement[D]>
     : T[P]
 };
@@ -48,7 +50,7 @@ export type A_SDK_TYPES__DeepPartial<T, D extends number = 5> = {
 // };
 
 export type A_SDK_TYPES__ObjectKeyEnum<T, E> = {
-    [P in keyof Required<T>]?: Required<T>[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
+    [P in keyof Required<T>]?: T[P] extends object ? A_SDK_TYPES__ObjectKeyEnum<T[P], E> : E;
 };
 
 
