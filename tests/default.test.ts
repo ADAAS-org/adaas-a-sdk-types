@@ -1,4 +1,5 @@
 import { A_SDK_CommonHelper } from '@adaas/a-sdk/helpers/Common.helper';
+import { A_SDK_TYPES__DeepPartial } from '@adaas/a-sdk/types/common.types';
 import { config } from 'dotenv';
 config();
 jest.retryTimes(0);
@@ -55,5 +56,49 @@ describe('CommonHelper Tests', () => {
             expect(duration).toBeLessThan(3000);
         }
 
+    });
+
+    it('Deep Clone and  Merge ', async () => {
+
+        type TestType = {
+            a: string,
+            b: string,
+            c: {
+                d: string
+            },
+            f: (name: string) => string
+            s: Date
+        }
+
+        const t: TestType = {
+            a: 'a',
+            b: 'b',
+            c: {
+                d: 'd'
+            },
+            f: (name: string) => { return name },
+            s: new Date()
+        }
+
+        const t2: A_SDK_TYPES__DeepPartial<TestType> = {
+            a: 'aa',
+            c: {
+                d: 'dd'
+            },
+            f: (name: string) => { return name + '2' }
+        }
+
+        const merged = A_SDK_CommonHelper.deepCloneAndMerge(t2, t);
+
+
+        const name = merged.f('names');
+
+
+        expect(merged.a).toBe('aa');
+        expect(merged.b).toBe('b');
+        expect(merged.c.d).toBe('dd');
+        expect(name).toBe('names2');
+        expect(t).not.toEqual(merged);
+        expect(t2).not.toEqual(merged);
     });
 });

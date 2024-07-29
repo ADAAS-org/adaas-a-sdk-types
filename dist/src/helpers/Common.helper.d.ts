@@ -1,5 +1,6 @@
 import { A_SDK_ScheduleObject } from "../global/A_SDK_ScheduleObject.class";
 import { A_SDK_TYPES__ScheduleObjectConfig } from "../types/A_SDK_ScheduleObject.types";
+import { A_SDK_TYPES__DeepPartial } from "../types/common.types";
 export declare class A_SDK_CommonHelper {
     static aseidRegexp: RegExp;
     static delay<T = void>(ms?: number, resolver?: Promise<T>): Promise<T>;
@@ -97,5 +98,6 @@ export declare class A_SDK_CommonHelper {
     static toCamelCase(str: string): string;
     static isObject(item: any): boolean;
     static deepMerge<T = any>(target: any, source: any, visited?: Map<any, any>): T;
-    deepClone<T>(obj: T): T;
+    static deepClone<T>(target: T): T;
+    static deepCloneAndMerge<T>(target: A_SDK_TYPES__DeepPartial<T>, source: T): T;
 }

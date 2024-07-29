@@ -39,15 +39,15 @@ class A_SDK_CommonHelper {
         // Deep clone the input object or array
         const result = JSON.parse(JSON.stringify(input));
         // Helper function to recursively remove properties
-        function removeProperties(obj, currPath) {
+        function removeProperties(target, currPath) {
             const currKey = currPath[0];
             if (currPath.length === 1) {
                 // If current path has only one key, delete the property
-                delete obj[currKey];
+                delete target[currKey];
             }
-            else if (obj[currKey] !== undefined && typeof obj[currKey] === 'object') {
+            else if (target[currKey] !== undefined && typeof target[currKey] === 'object') {
                 // If current key exists and is an object, recursively call removeProperties
-                removeProperties(obj[currKey], currPath.slice(1));
+                removeProperties(target[currKey], currPath.slice(1));
             }
         }
         // Iterate through each path and remove corresponding properties from the result
@@ -152,34 +152,73 @@ class A_SDK_CommonHelper {
         }
         return target;
     }
-    deepClone(obj) {
+    static deepClone(target) {
         // Check if the value is null or undefined
-        if (obj === null || obj === undefined) {
-            return obj;
+        if (target === null || target === undefined) {
+            return target;
         }
         // Handle primitive types (string, number, boolean, etc.)
-        if (typeof obj !== 'object') {
-            return obj;
+        if (typeof target !== 'object') {
+            return target;
         }
         // Handle Date
-        if (obj instanceof Date) {
-            return new Date(obj.getTime());
+        if (target instanceof Date) {
+            return new Date(target.getTime());
         }
         // Handle Array
-        if (Array.isArray(obj)) {
-            return obj.map(item => this.deepClone(item));
+        if (Array.isArray(target)) {
+            return target.map(item => this.deepClone(item));
         }
         // Handle Function
-        if (typeof obj === 'function') {
-            return obj;
+        if (typeof target === 'function') {
+            return target;
         }
         // Handle Object
-        if (obj instanceof Object) {
+        if (target instanceof Object) {
             const clone = {};
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    clone[key] = this.deepClone(obj[key]);
+            for (const key in target) {
+                if (target.hasOwnProperty(key)) {
+                    clone[key] = this.deepClone(target[key]);
                 }
+            }
+            return clone;
+        }
+        // For any other cases
+        throw new Error('Unable to clone the object. Unsupported type.');
+    }
+    static deepCloneAndMerge(target, source) {
+        if ((source === null || source === undefined) &&
+            (target === null || target === undefined))
+            return target;
+        // Check if the value is null or undefined
+        if ((target === null || target === undefined) &&
+            source) {
+            return this.deepClone(source);
+        }
+        // Handle primitive types (string, number, boolean, etc.)
+        if (typeof target !== 'object') {
+            return target;
+        }
+        // Handle Date
+        if (target instanceof Date) {
+            return new Date(target.getTime());
+        }
+        // Handle Array
+        if (Array.isArray(target)) {
+            return target.map(item => this.deepCloneAndMerge(item, source));
+        }
+        // Handle Function
+        if (typeof target === 'function') {
+            return target;
+        }
+        // Handle Object
+        if (target instanceof Object) {
+            const clone = {};
+            for (const key in source) {
+                if (target[key])
+                    clone[key] = this.deepCloneAndMerge(target[key], source[key]);
+                else
+                    clone[key] = this.deepClone(source[key]);
             }
             return clone;
         }

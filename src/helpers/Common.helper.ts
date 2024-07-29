@@ -1,6 +1,7 @@
 import { A_SDK_Deferred } from "../global/A_SDK_Deferred.class";
 import { A_SDK_ScheduleObject } from "../global/A_SDK_ScheduleObject.class";
 import { A_SDK_TYPES__ScheduleObjectConfig } from "../types/A_SDK_ScheduleObject.types";
+import { A_SDK_TYPES__DeepPartial } from "../types/common.types";
 
 type NestedObject = { [key: string]: any };
 
@@ -64,14 +65,14 @@ export class A_SDK_CommonHelper {
         const result = JSON.parse(JSON.stringify(input));
 
         // Helper function to recursively remove properties
-        function removeProperties(obj: NestedObject | any[], currPath: string[]) {
+        function removeProperties(target: NestedObject | any[], currPath: string[]) {
             const currKey = currPath[0];
             if (currPath.length === 1) {
                 // If current path has only one key, delete the property
-                delete obj[currKey];
-            } else if (obj[currKey] !== undefined && typeof obj[currKey] === 'object') {
+                delete target[currKey];
+            } else if (target[currKey] !== undefined && typeof target[currKey] === 'object') {
                 // If current key exists and is an object, recursively call removeProperties
-                removeProperties(obj[currKey], currPath.slice(1));
+                removeProperties(target[currKey], currPath.slice(1));
             }
         }
 
@@ -266,39 +267,90 @@ export class A_SDK_CommonHelper {
     }
 
 
-    deepClone<T>(obj: T): T {
+    static deepClone<T>(target: T): T {
         // Check if the value is null or undefined
-        if (obj === null || obj === undefined) {
-            return obj;
+        if (target === null || target === undefined) {
+            return target;
         }
 
         // Handle primitive types (string, number, boolean, etc.)
-        if (typeof obj !== 'object') {
-            return obj;
+        if (typeof target !== 'object') {
+            return target;
         }
 
         // Handle Date
-        if (obj instanceof Date) {
-            return new Date(obj.getTime()) as T;
+        if (target instanceof Date) {
+            return new Date(target.getTime()) as T;
         }
 
         // Handle Array
-        if (Array.isArray(obj)) {
-            return obj.map(item => this.deepClone(item)) as unknown as T;
+        if (Array.isArray(target)) {
+            return target.map(item => this.deepClone(item)) as unknown as T;
         }
 
         // Handle Function
-        if (typeof obj === 'function') {
-            return obj;
+        if (typeof target === 'function') {
+            return target;
         }
 
         // Handle Object
-        if (obj instanceof Object) {
+        if (target instanceof Object) {
             const clone = {} as T;
-            for (const key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    clone[key] = this.deepClone(obj[key]);
+            for (const key in target) {
+                if (target.hasOwnProperty(key)) {
+                    clone[key] = this.deepClone(target[key]);
                 }
+            }
+            return clone;
+        }
+
+        // For any other cases
+        throw new Error('Unable to clone the object. Unsupported type.');
+    }
+
+
+    static deepCloneAndMerge<T>(target: A_SDK_TYPES__DeepPartial<T>, source: T): T {
+        if (
+            (source === null || source === undefined) &&
+            (target === null || target === undefined))
+            return target;
+
+        // Check if the value is null or undefined
+        if ((target === null || target === undefined) &&
+            source
+        ) {
+            return this.deepClone(source);
+        }
+
+        // Handle primitive types (string, number, boolean, etc.)
+        if (typeof target !== 'object') {
+            return target
+        }
+
+
+        // Handle Date
+        if (target instanceof Date) {
+            return new Date(target.getTime()) as T;
+        }
+
+        // Handle Array
+        if (Array.isArray(target)) {
+            return target.map(item => this.deepCloneAndMerge(item, source)) as unknown as T;
+        }
+
+        // Handle Function
+        if (typeof target === 'function') {
+            return target;
+        }
+
+        // Handle Object
+        if (target instanceof Object) {
+            const clone = {} as T;
+            for (const key in source) {
+                if (target[key])
+                    clone[key] = this.deepCloneAndMerge(target[key], source[key]);
+                else
+                    clone[key] = this.deepClone(source[key]);
             }
             return clone;
         }
