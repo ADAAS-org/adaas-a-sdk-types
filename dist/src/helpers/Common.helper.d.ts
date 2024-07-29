@@ -97,4 +97,5 @@ export declare class A_SDK_CommonHelper {
     static toCamelCase(str: string): string;
     static isObject(item: any): boolean;
     static deepMerge<T = any>(target: any, source: any, visited?: Map<any, any>): T;
+    deepClone<T>(obj: T): T;
 }

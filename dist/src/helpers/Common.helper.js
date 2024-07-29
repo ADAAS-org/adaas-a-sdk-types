@@ -152,6 +152,40 @@ class A_SDK_CommonHelper {
         }
         return target;
     }
+    deepClone(obj) {
+        // Check if the value is null or undefined
+        if (obj === null || obj === undefined) {
+            return obj;
+        }
+        // Handle primitive types (string, number, boolean, etc.)
+        if (typeof obj !== 'object') {
+            return obj;
+        }
+        // Handle Date
+        if (obj instanceof Date) {
+            return new Date(obj.getTime());
+        }
+        // Handle Array
+        if (Array.isArray(obj)) {
+            return obj.map(item => this.deepClone(item));
+        }
+        // Handle Function
+        if (typeof obj === 'function') {
+            return obj;
+        }
+        // Handle Object
+        if (obj instanceof Object) {
+            const clone = {};
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    clone[key] = this.deepClone(obj[key]);
+                }
+            }
+            return clone;
+        }
+        // For any other cases
+        throw new Error('Unable to clone the object. Unsupported type.');
+    }
 }
 exports.A_SDK_CommonHelper = A_SDK_CommonHelper;
 A_SDK_CommonHelper.aseidRegexp = new RegExp(`^[a-z|A-Z|0-9]+@[a-z|A-Z|0-9|-]+:[a-z|A-Z]+:[a-z|A-Z|0-9|-]+(@v[0-9]+|@lts)?$`);

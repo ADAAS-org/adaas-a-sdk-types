@@ -264,4 +264,46 @@ export class A_SDK_CommonHelper {
         }
         return target;
     }
+
+
+    deepClone<T>(obj: T): T {
+        // Check if the value is null or undefined
+        if (obj === null || obj === undefined) {
+            return obj;
+        }
+
+        // Handle primitive types (string, number, boolean, etc.)
+        if (typeof obj !== 'object') {
+            return obj;
+        }
+
+        // Handle Date
+        if (obj instanceof Date) {
+            return new Date(obj.getTime()) as T;
+        }
+
+        // Handle Array
+        if (Array.isArray(obj)) {
+            return obj.map(item => this.deepClone(item)) as unknown as T;
+        }
+
+        // Handle Function
+        if (typeof obj === 'function') {
+            return obj;
+        }
+
+        // Handle Object
+        if (obj instanceof Object) {
+            const clone = {} as T;
+            for (const key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    clone[key] = this.deepClone(obj[key]);
+                }
+            }
+            return clone;
+        }
+
+        // For any other cases
+        throw new Error('Unable to clone the object. Unsupported type.');
+    }
 }
