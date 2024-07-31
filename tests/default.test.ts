@@ -101,4 +101,44 @@ describe('CommonHelper Tests', () => {
         expect(t).not.toEqual(merged);
         expect(t2).not.toEqual(merged);
     });
+
+    it('Deep Clone Different Types', async () => {
+
+        type TestType = {
+            a: string,
+            b: string,
+            c: {
+                d: string
+            },
+            f: (name: string) => string
+            s: Date
+        }
+
+        const t: TestType = {
+            a: 'a',
+            b: 'b',
+            c: {
+                d: 'd'
+            },
+            f: (name: string) => { return name },
+            s: new Date()
+        }
+
+        const t2: any = {
+            e: 'foo',
+            b: 'bb',
+            some: {
+                d: 'dd'
+            },
+        }
+
+        const merged = A_SDK_CommonHelper.deepCloneAndMerge(t2, t);
+
+        expect(merged.a).toBe('a');
+        expect(merged.b).toBe('bb');
+        expect(merged.c.d).toBe('d');
+        expect((merged as any).e).toBe('foo');
+        expect((merged as any).some.d).toBe('dd');
+        expect(merged.f('names')).toBe('names');
+    });
 });
