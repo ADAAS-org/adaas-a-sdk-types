@@ -49,8 +49,10 @@ class LibPolyfillClass {
             testEnvironment = window.location ? 'browser' : 'server';
         }
         catch (error) {
+            console.log('All Environment Checks Failed error', error);
             testEnvironment = 'server';
         }
+        console.log('env', testEnvironment);
         return testEnvironment;
     }
     init() {
