@@ -126,15 +126,15 @@ class A_SDK_ContextClass {
         this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
         this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
         this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
+        if (config.variables) {
+            this.CLIENT_ID = config.variables.client_id || this.CLIENT_ID;
+            this.CLIENT_SECRET = config.variables.client_secret || this.CLIENT_SECRET;
+        }
+        this.Logger.log('Configurations loaded from manual configuration.');
         /**
          * Since configuration properties passed manually we should ignore the loadConfigurations stage
          */
         this.defaultInit();
-    }
-    setCredentials(credentials) {
-        this.CLIENT_ID = credentials.client_id;
-        this.CLIENT_SECRET = credentials.client_secret;
-        this.Logger.log('Credentials set manually');
     }
     loadConfigurations() {
         return __awaiter(this, void 0, void 0, function* () {

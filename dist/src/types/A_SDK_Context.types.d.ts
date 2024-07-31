@@ -21,6 +21,10 @@ export type A_SDK_TYPES__ContextConfigurations = {
      * SDK Validation mode
      */
     sdkValidation?: boolean;
+    /**
+     * Credentials for the SDK or any other context variables
+     */
+    variables?: A_SDK_TYPES__IContextCredentials;
 };
 export interface A_SDK_TYPES__IContextCredentials {
     /**

@@ -1,5 +1,5 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
-import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from '../types/A_SDK_Context.types';
+import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor } from '../types/A_SDK_Context.types';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
 export declare class A_SDK_ContextClass {
     protected params: Partial<A_SDK_TYPES__ContextConstructor>;
@@ -44,7 +44,6 @@ export declare class A_SDK_ContextClass {
      * @param sdkValidation
      */
     configure(config: Partial<A_SDK_TYPES__ContextConfigurations>): void;
-    setCredentials<T extends A_SDK_TYPES__IContextCredentials = A_SDK_TYPES__IContextCredentials>(credentials: T): void;
     private loadConfigurations;
     private loadConfigurationsFromEnvironment;
     private loadConfigurationsFromFile;
