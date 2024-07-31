@@ -9,6 +9,7 @@ import {
 import { A_SDK_CommonHelper } from '../helpers/Common.helper';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
 import { A_SDK_CONSTANTS__DEFAULT_ERRORS, A_SDK_CONSTANTS__ERROR_CODES } from "../constants/errors.constants";
+import { A_SDK_TYPES__DeepPartial } from "../types/common.types";
 
 
 export class A_SDK_ContextClass {
@@ -164,14 +165,14 @@ export class A_SDK_ContextClass {
      * @param ignoreErrors 
      * @param sdkValidation 
      */
-    configure(config: Partial<A_SDK_TYPES__ContextConfigurations>) {
+    configure(config: A_SDK_TYPES__DeepPartial<A_SDK_TYPES__ContextConfigurations>) {
         this.namespace = config.namespace || this.namespace;
 
         this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
         this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
         this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
 
-        if(config.variables) {
+        if (config.variables) {
             this.CLIENT_ID = config.variables.client_id || this.CLIENT_ID;
             this.CLIENT_SECRET = config.variables.client_secret || this.CLIENT_SECRET;
         }

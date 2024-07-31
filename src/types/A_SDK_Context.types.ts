@@ -32,7 +32,7 @@ export type A_SDK_TYPES__ContextConfigurations = {
     /**
      * Credentials for the SDK or any other context variables
      */
-    variables?: A_SDK_TYPES__IContextCredentials
+    variables: A_SDK_TYPES__IContextCredentials
 }
 
 
