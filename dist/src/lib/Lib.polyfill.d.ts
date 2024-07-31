@@ -4,6 +4,7 @@ interface Ifspolyfill {
 }
 declare class LibPolyfillClass {
     private _fs;
+    private moduleName;
     fs(): Promise<Ifspolyfill>;
     get env(): 'server' | 'browser';
     private init;

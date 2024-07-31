@@ -8,6 +8,8 @@ class LibPolyfillClass {
 
     private _fs!: Ifspolyfill;
 
+    private moduleName = 'fs'
+
 
     async fs() {
         if (!this._fs) {
@@ -40,11 +42,9 @@ class LibPolyfillClass {
 
 
     private async init() {
-
-
         try {
             if (this.env === 'server') {
-                this._fs = await import('fs') as Ifspolyfill;
+                this._fs = await import(this.moduleName) as Ifspolyfill;
             }
             else {
                 this._fs = {

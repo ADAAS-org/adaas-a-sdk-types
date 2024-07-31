@@ -34,6 +34,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LibPolyfill = void 0;
 class LibPolyfillClass {
+    constructor() {
+        this.moduleName = 'fs';
+    }
     fs() {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this._fs) {
@@ -59,7 +62,7 @@ class LibPolyfillClass {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (this.env === 'server') {
-                    this._fs = (yield Promise.resolve().then(() => __importStar(require('fs'))));
+                    this._fs = (yield Promise.resolve(`${this.moduleName}`).then(s => __importStar(require(s))));
                 }
                 else {
                     this._fs = {
