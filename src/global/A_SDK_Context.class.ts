@@ -192,7 +192,7 @@ export class A_SDK_ContextClass {
     private async loadConfigurations(): Promise<void> {
         const fs = await LibPolyfill.fs();
 
-        if (!!(process && process.env)) {
+        if (this.environment === 'server') {
             await this.loadConfigurationsFromEnvironment();
         }
 

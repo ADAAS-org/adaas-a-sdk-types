@@ -24,19 +24,12 @@ class LibPolyfillClass {
         let testEnvironment: 'server' | 'browser' = 'browser';
 
         try {
-            console.log('window', window.location);
-
             testEnvironment = window.location ? 'browser' : 'server';
 
         } catch (error) {
 
-            console.log('All Environment Checks Failed error', error);
-
             testEnvironment = 'server';
         }
-
-
-        console.log('env', testEnvironment);
 
         return testEnvironment;
     }
@@ -46,7 +39,7 @@ class LibPolyfillClass {
         try {
             if (this.env === 'server') {
                 // eslint-disable-next-line no-use-before-define
-                this._fs = await import(this.moduleName) as Ifspolyfill;
+                this._fs = await import('' + this.moduleName) as Ifspolyfill;
             }
             else {
                 this._fs = {
@@ -55,8 +48,6 @@ class LibPolyfillClass {
                 };
             }
         } catch (error) {
-
-            console.log('All FS Polyfill Checks Failed error', error);
 
             this._fs = {
                 readFileSync: (path: string, encoding: string) => '',

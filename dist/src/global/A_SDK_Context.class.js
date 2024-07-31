@@ -139,7 +139,7 @@ class A_SDK_ContextClass {
     loadConfigurations() {
         return __awaiter(this, void 0, void 0, function* () {
             const fs = yield Lib_polyfill_1.LibPolyfill.fs();
-            if (!!(process && process.env)) {
+            if (this.environment === 'server') {
                 yield this.loadConfigurationsFromEnvironment();
             }
             if (fs.existsSync(`${this.namespace}.conf.json`)) {
