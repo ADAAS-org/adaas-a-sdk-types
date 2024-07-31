@@ -21,7 +21,7 @@ class LibPolyfillClass {
         let testEnvironment: 'server' | 'browser' = 'server';
 
         try {
-            console.log('window', window);
+            console.log('window', window.location);
 
             testEnvironment = window.location ? 'browser' : 'server';
 
