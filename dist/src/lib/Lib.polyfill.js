@@ -35,6 +35,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LibPolyfill = void 0;
 class LibPolyfillClass {
     constructor() {
+        // eslint-disable-next-line no-use-before-define
         this.moduleName = 'fs';
     }
     fs() {
@@ -46,7 +47,7 @@ class LibPolyfillClass {
         });
     }
     get env() {
-        let testEnvironment = 'server';
+        let testEnvironment = 'browser';
         try {
             console.log('window', window.location);
             testEnvironment = window.location ? 'browser' : 'server';
@@ -62,6 +63,7 @@ class LibPolyfillClass {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (this.env === 'server') {
+                    // eslint-disable-next-line no-use-before-define
                     this._fs = (yield Promise.resolve(`${this.moduleName}`).then(s => __importStar(require(s))));
                 }
                 else {

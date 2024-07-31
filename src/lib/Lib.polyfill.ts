@@ -8,6 +8,7 @@ class LibPolyfillClass {
 
     private _fs!: Ifspolyfill;
 
+    // eslint-disable-next-line no-use-before-define
     private moduleName = 'fs'
 
 
@@ -20,7 +21,7 @@ class LibPolyfillClass {
 
 
     get env(): 'server' | 'browser' {
-        let testEnvironment: 'server' | 'browser' = 'server';
+        let testEnvironment: 'server' | 'browser' = 'browser';
 
         try {
             console.log('window', window.location);
@@ -44,6 +45,7 @@ class LibPolyfillClass {
     private async init() {
         try {
             if (this.env === 'server') {
+                // eslint-disable-next-line no-use-before-define
                 this._fs = await import(this.moduleName) as Ifspolyfill;
             }
             else {

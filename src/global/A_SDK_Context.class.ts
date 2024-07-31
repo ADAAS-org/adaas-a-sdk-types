@@ -117,11 +117,13 @@ export class A_SDK_ContextClass {
 
         // global logger configuration
         if (this.environment === 'server') {
+            // eslint-disable-next-line no-use-before-define
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
                 if (error instanceof A_SDK_Error)
                     this.Logger.error(error);
             });
+            // eslint-disable-next-line no-use-before-define
             process.on('unhandledRejection', (error) => {
                 if (error instanceof A_SDK_Error)
                     this.Logger.error(error);
