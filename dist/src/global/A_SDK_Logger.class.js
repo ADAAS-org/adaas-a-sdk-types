@@ -45,7 +45,7 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`
         const firstArg = args[0];
         if (firstArg instanceof A_SDK_Error_class_1.A_SDK_Error)
             this.log_A_SDK_Error(firstArg);
-        else
+        else if (firstArg instanceof Error) {
             console.log(`\x1b[31m[${this.namespace}] |${this.getTime()}| ERROR 
 ${' '.repeat(this.namespace.length + 3)}|-------------------------------`, ...args
                 .map(arg => {
@@ -61,6 +61,21 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------`, ...ar
                     : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`);
             }), `
 ${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`);
+        }
+        else
+            console.log(`\x1b[31m[${this.namespace}] |${this.getTime()}|`, args.length > 1
+                ? `
+${' '.repeat(this.namespace.length + 3)}|-------------------------------`
+                : '', ...args
+                .map((arg, i) => typeof arg === 'object'
+                ? JSON.stringify(arg, null, 2)
+                    .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                : String(((i > 0 || args.length > 1) ? '\n' : '')
+                    + arg)
+                    .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)), args.length > 1 ?
+                `
+${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m` :
+                '\x1b[0m');
     }
     log_A_SDK_Error(error) {
         var _a, _b;
