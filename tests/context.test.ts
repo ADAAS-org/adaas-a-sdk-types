@@ -104,4 +104,21 @@ describe('Context Tests', () => {
 
     });
 
+    it('Should Log data properly', async () => {
+
+        const namespace = 'test-config-read-fail';
+        const testContext = new A_SDK_ContextClass({
+            namespace,
+        });
+
+        testContext.Logger.log(`
+            Some Suff that should be done`, {
+            test: 'data',
+            test2: {
+                test: 'data'
+            }
+        });
+
+    });
+
 });

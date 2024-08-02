@@ -15,12 +15,35 @@ export class A_SDK_DefaultLogger {
         this.namespace = params.namespace || this.namespace;
     }
 
+    // protected getTerminalWidth ()  {
+    //     if (process.stdout.isTTY) {
+    //         return process.stdout.columns;
+    //     }
+    //     return null;
+    // };
+
 
     log(...args) {
         if (!this.verbose)
             return;
-
-        console.log('\x1b[36m%s\x1b[0m', `[${this.namespace}] |${this.getTime()}| `, ...args)
+        console.log(`\x1b[36m[${this.namespace}] |${this.getTime()}|`,
+            args.length > 1
+                ? `
+${' '.repeat(this.namespace.length + 3)}|-------------------------------`
+                : ''
+            , ...args
+                .map((arg, i) => typeof arg === 'object'
+                    ? JSON.stringify(arg, null, 2)
+                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                    : String(
+                        ((i > 0 || args.length > 1) ? '\n' : '')
+                        + arg)
+                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                ),
+            args.length > 1 ?
+                `
+${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m` :
+                '\x1b[0m');
     }
 
     warning(...args) {
@@ -39,7 +62,26 @@ export class A_SDK_DefaultLogger {
         if (firstArg instanceof A_SDK_Error)
             this.log_A_SDK_Error(firstArg)
         else
-            console.log('\x1b[31m%s\x1b[0m', `[${this.namespace} ERROR] |${this.getTime()}| `, ...args)
+            console.log(`\x1b[31m[${this.namespace}] |${this.getTime()}| ERROR 
+${' '.repeat(this.namespace.length + 3)}|-------------------------------`,
+                ...args
+                    .map(arg => typeof arg === 'object'
+                        ? JSON.stringify({
+                            name: arg.name,
+                            message: arg.message,
+                            stack: arg.stack?.split('\n')
+                                .map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`)
+                                .join('\n')
+
+                        }, null, 2)
+                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                            .replace(/\\n/g, '\n')
+
+                        : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                    )
+
+                , `
+${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`)
     }
 
 

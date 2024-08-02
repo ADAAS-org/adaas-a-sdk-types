@@ -39,6 +39,14 @@ class A_SDK_ContextClass {
         });
         this.Errors = new A_SDK_ErrorsProvider_class_1.A_SDK_ErrorsProvider({
             namespace: this.namespace,
+            errors: params.errors ?
+                Array.isArray(params.errors) ?
+                    [
+                        ...Object.values(errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS),
+                        ...params.errors
+                    ]
+                    : Object.assign(Object.assign({}, errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS), params.errors)
+                : errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS
         });
         this.init();
     }
@@ -78,7 +86,14 @@ class A_SDK_ContextClass {
         });
         this.Errors = new A_SDK_ErrorsProvider_class_1.A_SDK_ErrorsProvider({
             namespace: this.namespace,
-            errors: this.params.errors
+            errors: this.params.errors ?
+                Array.isArray(this.params.errors) ?
+                    [
+                        ...Object.values(errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS),
+                        ...this.params.errors
+                    ]
+                    : Object.assign(Object.assign({}, errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS), this.params.errors)
+                : errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS
         });
         // global logger configuration
         if (this.environment === 'server') {

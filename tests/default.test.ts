@@ -134,6 +134,8 @@ describe('CommonHelper Tests', () => {
 
         const merged = A_SDK_CommonHelper.deepCloneAndMerge(t2, t);
 
+        console.log('merged: ', merged)
+
         expect(merged.a).toBe('a');
         expect(merged.b).toBe('bb');
         expect(merged.c.d).toBe('d');

@@ -64,6 +64,17 @@ export class A_SDK_ContextClass {
         });
         this.Errors = new A_SDK_ErrorsProvider({
             namespace: this.namespace,
+            errors: params.errors ?
+                Array.isArray(params.errors) ?
+                    [
+                        ...Object.values(A_SDK_CONSTANTS__DEFAULT_ERRORS),
+                        ...params.errors
+                    ]
+                    : {
+                        ...A_SDK_CONSTANTS__DEFAULT_ERRORS,
+                        ...params.errors
+                    }
+                : A_SDK_CONSTANTS__DEFAULT_ERRORS
         })
 
         this.init();
@@ -113,7 +124,17 @@ export class A_SDK_ContextClass {
 
         this.Errors = new A_SDK_ErrorsProvider({
             namespace: this.namespace,
-            errors: this.params.errors
+            errors: this.params.errors ?
+                Array.isArray(this.params.errors) ?
+                    [
+                        ...Object.values(A_SDK_CONSTANTS__DEFAULT_ERRORS),
+                        ...this.params.errors
+                    ]
+                    : {
+                        ...A_SDK_CONSTANTS__DEFAULT_ERRORS,
+                        ...this.params.errors
+                    }
+                : A_SDK_CONSTANTS__DEFAULT_ERRORS
         });
 
         // global logger configuration
