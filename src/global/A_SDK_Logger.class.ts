@@ -34,11 +34,11 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------`
             , ...args
                 .map((arg, i) => typeof arg === 'object'
                     ? JSON.stringify(arg, null, 2)
-                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
                     : String(
                         ((i > 0 || args.length > 1) ? '\n' : '')
                         + arg)
-                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
                 ),
             args.length > 1 ?
                 `
@@ -74,10 +74,10 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------`,
                                 .join('\n')
 
                         }, null, 2)
-                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
                             .replace(/\\n/g, '\n')
 
-                        : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                        : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
                     )
 
                 , `

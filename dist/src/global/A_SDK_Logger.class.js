@@ -26,10 +26,10 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------`
             : '', ...args
             .map((arg, i) => typeof arg === 'object'
             ? JSON.stringify(arg, null, 2)
-                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
             : String(((i > 0 || args.length > 1) ? '\n' : '')
                 + arg)
-                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)), args.length > 1 ?
+                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)), args.length > 1 ?
             `
 ${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m` :
             '\x1b[0m');
@@ -56,9 +56,9 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------`, ...ar
                         message: arg.message,
                         stack: (_a = arg.stack) === null || _a === void 0 ? void 0 : _a.split('\n').map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`).join('\n')
                     }, null, 2)
-                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
+                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
                         .replace(/\\n/g, '\n')
-                    : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`);
+                    : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `);
             }), `
 ${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`);
         }
