@@ -121,7 +121,10 @@ class A_SDK_CommonHelper {
         };
     }
     static toUpperSnakeCase(str) {
-        return str.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+        return str
+            .replace(/([a-z])([A-Z])/g, '$1_$2') // Handle lowercase followed by uppercase
+            .replace(/[-\s]([A-Z])/g, '_$1') // Handle non-alphabetical followed by uppercase
+            .toUpperCase();
     }
     static toCamelCase(str) {
         return str.toLowerCase().replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
