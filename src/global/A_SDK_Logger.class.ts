@@ -15,6 +15,19 @@ export class A_SDK_DefaultLogger {
         this.namespace = params.namespace || this.namespace;
     }
 
+    private colors = {
+        green: '32',
+        blue: '34',
+        red: '31',
+        yellow: '33',
+        gray: '90',
+        magenta: '35',
+        cyan: '36',
+        white: '37',
+        pink: '95',
+    } as const
+
+
     // protected getTerminalWidth ()  {
     //     if (process.stdout.isTTY) {
     //         return process.stdout.columns;
@@ -23,86 +36,69 @@ export class A_SDK_DefaultLogger {
     // };
 
 
+    compile(
+        color: keyof typeof this.colors,
+        ...args: any[]
+    ): Array<string> {
+
+        return [
+            `\x1b[${this.colors[color]}m[${this.namespace}] |${this.getTime()}|`,
+            (
+                args.length > 1
+                    ? '\n' + `${' '.repeat(this.namespace.length + 3)}|-------------------------------`
+                    : ''
+
+            ),
+            ...(args
+                .map((arg, i) => {
+
+
+                    switch (true) {
+                        case arg instanceof A_SDK_Error:
+                            return this.compile_A_SDK_Error(arg);
+
+                        case arg instanceof Error:
+                            return this.compile_Error(arg);
+
+                        case typeof arg === 'object':
+                            return JSON.stringify(arg, null, 2)
+                                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `);
+
+                        default:
+                            return String(
+                                ((i > 0 || args.length > 1) ? '\n' : '')
+                                + arg)
+                                .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
+                    }
+                })),
+            (
+                args.length > 1
+                    ? '\n' + `${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`
+                    : '\x1b[0m'
+            )
+        ]
+    }
+
+
     log(...args) {
         if (!this.verbose)
             return;
-        console.log(`\x1b[36m[${this.namespace}] |${this.getTime()}|`,
-            args.length > 1
-                ? `
-${' '.repeat(this.namespace.length + 3)}|-------------------------------`
-                : ''
-            , ...args
-                .map((arg, i) => typeof arg === 'object'
-                    ? JSON.stringify(arg, null, 2)
-                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
-                    : String(
-                        ((i > 0 || args.length > 1) ? '\n' : '')
-                        + arg)
-                        .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
-                ),
-            args.length > 1 ?
-                `
-${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m` :
-                '\x1b[0m');
+
+        console.log(...this.compile('blue', ...args));
     }
 
     warning(...args) {
         if (!this.verbose)
             return;
 
-        console.log(`[${this.namespace}] |${this.getTime()}| `, ...args)
+        console.log(...this.compile('yellow', ...args));
     }
 
     error(...args) {
         if (this.ignoreErrors)
             return;
 
-        const firstArg = args[0];
-
-        if (firstArg instanceof A_SDK_Error)
-            this.log_A_SDK_Error(firstArg)
-        else if (firstArg instanceof Error) {
-            console.log(`\x1b[31m[${this.namespace}] |${this.getTime()}| ERROR 
-${' '.repeat(this.namespace.length + 3)}|-------------------------------`,
-                ...args
-                    .map(arg => typeof arg === 'object'
-                        ? JSON.stringify({
-                            name: arg.name,
-                            message: arg.message,
-                            stack: arg.stack?.split('\n')
-                                .map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`)
-                                .join('\n')
-
-                        }, null, 2)
-                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
-                            .replace(/\\n/g, '\n')
-
-                        : String(arg).replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
-                    )
-
-                , `
-${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m`)
-        }
-        else
-            console.log(`\x1b[31m[${this.namespace}] |${this.getTime()}|`,
-                args.length > 1
-                    ? `
-${' '.repeat(this.namespace.length + 3)}|-------------------------------`
-                    : ''
-                , ...args
-                    .map((arg, i) => typeof arg === 'object'
-                        ? JSON.stringify(arg, null, 2)
-                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
-                        : String(
-                            ((i > 0 || args.length > 1) ? '\n' : '')
-                            + arg)
-                            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}|`)
-                    ),
-                args.length > 1 ?
-                    `
-${' '.repeat(this.namespace.length + 3)}|-------------------------------\x1b[0m` :
-                    '\x1b[0m');
-
+        return console.log(...this.compile('red', ...args));
     }
 
 
@@ -126,6 +122,46 @@ ${' '.repeat(this.namespace.length + 3)}|-------------------------------
 \x1b[0m`: ''));
 
     }
+
+    protected compile_A_SDK_Error(error: A_SDK_Error): string {
+        const time = this.getTime();
+
+        return '\n' +
+
+            `${' '.repeat(this.namespace.length + 3)}|-------------------------------` +
+            '\n' +
+            `${' '.repeat(this.namespace.length + 3)}|  Error:  | ${error.code}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+${' '.repeat(this.namespace.length + 3)}|${' '.repeat(10)}| ${error.message}
+${' '.repeat(this.namespace.length + 3)}|${' '.repeat(10)}| ${error.description} 
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+${' '.repeat(this.namespace.length + 3)}| ${error.stack?.split('\n').map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`).join('\n') || 'No stack trace'}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------`
+            +
+            (error.originalError ? `${' '.repeat(this.namespace.length + 3)}| Wrapped From  ${error.originalError.message}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------
+${' '.repeat(this.namespace.length + 3)}| ${error.originalError.stack?.split('\n').map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`).join('\n') || 'No stack trace'}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------` : '')
+            +
+            (error.link ? `${' '.repeat(this.namespace.length + 3)}| Read in docs: ${error.link}
+${' '.repeat(this.namespace.length + 3)}|-------------------------------` : '');
+
+    }
+
+
+    protected compile_Error(error: Error): string {
+        return JSON.stringify({
+            name: error.name,
+            message: error.message,
+            stack: error.stack?.split('\n')
+                .map((line, index) => index === 0 ? line : `${' '.repeat(this.namespace.length + 3)}| ${line}`)
+                .join('\n')
+
+        }, null, 2)
+            .replace(/\n/g, '\n' + `${' '.repeat(this.namespace.length + 3)}| `)
+            .replace(/\\n/g, '\n')
+    }
+
 
 
 
