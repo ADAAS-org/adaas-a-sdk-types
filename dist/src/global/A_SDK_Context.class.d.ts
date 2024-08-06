@@ -1,5 +1,5 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
-import { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor } from '../types/A_SDK_Context.types';
+import { A_SDK_TYPES__ContextConfigControl, A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor } from '../types/A_SDK_Context.types';
 import { A_SDK_ErrorsProvider } from "./A_SDK_ErrorsProvider.class";
 import { A_SDK_TYPES__DeepPartial } from "../types/common.types";
 export declare class A_SDK_ContextClass {
@@ -10,6 +10,7 @@ export declare class A_SDK_ContextClass {
     protected CONFIG_SDK_VALIDATION: boolean;
     protected CONFIG_VERBOSE: boolean;
     protected CONFIG_IGNORE_ERRORS: boolean;
+    protected CONFIG_CONTROL: A_SDK_TYPES__ContextConfigControl;
     /**
      * Logger for the SDK inside namespace
      */

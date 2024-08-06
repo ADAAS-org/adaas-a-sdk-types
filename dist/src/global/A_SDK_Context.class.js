@@ -18,6 +18,7 @@ const A_SDK_ErrorsProvider_class_1 = require("./A_SDK_ErrorsProvider.class");
 const errors_constants_1 = require("../constants/errors.constants");
 class A_SDK_ContextClass {
     constructor(params) {
+        var _a, _b;
         this.params = params;
         // Credentials for ADAAS SDKs from default names as A_SDK_CLIENT_ID, A_SDK_CLIENT_SECRET
         this.CLIENT_ID = '';
@@ -26,6 +27,10 @@ class A_SDK_ContextClass {
         this.CONFIG_SDK_VALIDATION = true;
         this.CONFIG_VERBOSE = false;
         this.CONFIG_IGNORE_ERRORS = false;
+        this.CONFIG_CONTROL = {
+            inheritance: false,
+            processListeners: true
+        };
         this.defaultAllowedToReadProperties = [
             'CONFIG_SDK_VALIDATION',
             'CONFIG_VERBOSE',
@@ -48,6 +53,10 @@ class A_SDK_ContextClass {
                     : Object.assign(Object.assign({}, errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS), params.errors)
                 : errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS
         });
+        this.CONFIG_CONTROL = {
+            inheritance: ((_a = params.control) === null || _a === void 0 ? void 0 : _a.inheritance) || this.CONFIG_CONTROL.inheritance,
+            processListeners: ((_b = params.control) === null || _b === void 0 ? void 0 : _b.processListeners) || this.CONFIG_CONTROL.processListeners
+        };
         this.init();
     }
     getConfigurationProperty(property) {
@@ -96,7 +105,8 @@ class A_SDK_ContextClass {
                 : errors_constants_1.A_SDK_CONSTANTS__DEFAULT_ERRORS
         });
         // global logger configuration
-        if (this.environment === 'server') {
+        if (this.environment === 'server'
+            && this.CONFIG_CONTROL.processListeners) {
             // eslint-disable-next-line no-use-before-define
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
@@ -145,7 +155,8 @@ class A_SDK_ContextClass {
             this.CLIENT_ID = config.variables.client_id || this.CLIENT_ID;
             this.CLIENT_SECRET = config.variables.client_secret || this.CLIENT_SECRET;
         }
-        this.Logger.log('Configurations loaded from manual configuration.');
+        if (!this.CONFIG_CONTROL.inheritance)
+            this.Logger.log('Configurations loaded from manual configuration.');
         /**
          * Since configuration properties passed manually we should ignore the loadConfigurations stage
          */
@@ -170,7 +181,8 @@ class A_SDK_ContextClass {
             this.CONFIG_VERBOSE = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_VERBOSE')] === 'true' || this.CONFIG_VERBOSE;
             this.CONFIG_IGNORE_ERRORS = process.env[this.getConfigurationProperty_ENV_Alias('CONFIG_IGNORE_ERRORS')] === 'true' || this.CONFIG_IGNORE_ERRORS;
             yield this.loadExtendedConfigurationsFromEnvironment();
-            this.Logger.log('Configurations loaded from environment variables.');
+            if (!this.CONFIG_CONTROL.inheritance)
+                this.Logger.log('Configurations loaded from environment variables.');
         });
     }
     loadConfigurationsFromFile() {
@@ -185,7 +197,8 @@ class A_SDK_ContextClass {
                 this.CONFIG_IGNORE_ERRORS = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_IGNORE_ERRORS;
                 this.CONFIG_SDK_VALIDATION = config[this.getConfigurationProperty_File_Alias('CLIENT_ID')] || this.CONFIG_SDK_VALIDATION;
                 yield this.loadExtendedConfigurationsFromFile(config);
-                this.Logger.log('Configurations loaded from file.');
+                if (!this.CONFIG_CONTROL.inheritance)
+                    this.Logger.log('Configurations loaded from file.');
             }
             catch (error) {
                 this.Logger.error(error);

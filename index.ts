@@ -39,5 +39,8 @@ export {
 } from './src/global/A_SDK_Context.class';
 
 export {
-    A_SDK_TYPES__ContextConfigurations
+    A_SDK_TYPES__ContextConfigurations,
+    A_SDK_TYPES__ContextConfigControl,
+    A_SDK_TYPES__ContextConstructor,
+    A_SDK_TYPES__IContextCredentials
 } from './src/types/A_SDK_Context.types';
