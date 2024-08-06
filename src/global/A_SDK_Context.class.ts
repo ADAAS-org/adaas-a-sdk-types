@@ -144,7 +144,7 @@ export class A_SDK_ContextClass {
         });
 
         // global logger configuration
-        if (this.environment === 'server') {
+        if (this.environment === 'server' && !this.hasInherited(A_SDK_ContextClass)) {
             // eslint-disable-next-line no-use-before-define
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
@@ -195,17 +195,22 @@ export class A_SDK_ContextClass {
     configure(config: A_SDK_TYPES__DeepPartial<A_SDK_TYPES__ContextConfigurations>) {
         this.namespace = config.namespace || this.namespace;
 
-        this.CONFIG_VERBOSE = config.verbose || this.CONFIG_VERBOSE;
-        this.CONFIG_IGNORE_ERRORS = config.ignoreErrors || this.CONFIG_IGNORE_ERRORS;
-        this.CONFIG_SDK_VALIDATION = config.sdkValidation || this.CONFIG_SDK_VALIDATION;
+        this.CONFIG_VERBOSE = config.verbose === true || config.verbose === false
+            ? config.verbose
+            : this.CONFIG_VERBOSE;
+        this.CONFIG_IGNORE_ERRORS = config.ignoreErrors === true || config.ignoreErrors === false
+            ? config.ignoreErrors
+            : this.CONFIG_IGNORE_ERRORS;
+        this.CONFIG_SDK_VALIDATION = config.sdkValidation === true || config.sdkValidation === false
+            ? config.sdkValidation
+            : this.CONFIG_SDK_VALIDATION;
 
         if (config.variables) {
             this.CLIENT_ID = config.variables.client_id || this.CLIENT_ID;
             this.CLIENT_SECRET = config.variables.client_secret || this.CLIENT_SECRET;
         }
 
-        if (this.hasInherited(A_SDK_ContextClass))
-            this.Logger.log('Configurations loaded from manual configuration.');
+        this.Logger.log('Configurations loaded from manual configuration.');
 
         /**
          * Since configuration properties passed manually we should ignore the loadConfigurations stage 
