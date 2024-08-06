@@ -9,4 +9,4 @@ export { A_SDK_TYPES__IAEntity } from './src/types/A_Entity.types';
 export { A_SDK_TYPES__IDefaultPagination, A_SDK_TYPES__IRequestFilter, A_SDK_TYPES__IRequestPagination } from './src/types/A_SDK_ApiProvider.types';
 export { A_SDK_DefaultLogger } from './src/global/A_SDK_Logger.class';
 export { A_SDK_ContextClass, A_SDK_Context } from './src/global/A_SDK_Context.class';
-export { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConfigControl, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from './src/types/A_SDK_Context.types';
+export { A_SDK_TYPES__ContextConfigurations, A_SDK_TYPES__ContextConstructor, A_SDK_TYPES__IContextCredentials } from './src/types/A_SDK_Context.types';

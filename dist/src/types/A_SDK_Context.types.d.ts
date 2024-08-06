@@ -3,22 +3,6 @@ import { A_SDK_TYPES__Dictionary } from "./common.types";
 export type A_SDK_TYPES__ContextConstructor = {
     namespace: string;
     errors: A_SDK_TYPES__Dictionary<A_SDK_TYPES__Error> | A_SDK_TYPES__Error[];
-    /**
-     * Completely not mandatory but can be used to control the behavior of parent methods and properties
-     */
-    control: A_SDK_TYPES__ContextConfigControl;
-};
-export type A_SDK_TYPES__ContextConfigControl = {
-    /**
-     * Can let know the parent context that it inherits in other class
-     * This information helps to handle super methods properly
-     */
-    inheritance: boolean;
-    /**
-     * Parent context will include or exclude the listeners from process
-     * Includes: uncaughtException, unhandledRejection
-     */
-    processListeners: boolean;
 };
 export type A_SDK_TYPES__ContextConfigurations = {
     /**

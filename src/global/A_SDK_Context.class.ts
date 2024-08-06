@@ -2,7 +2,6 @@ import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
 import { LibPolyfill } from '../lib/Lib.polyfill'
 import { A_SDK_Error } from "./A_SDK_Error.class";
 import {
-    A_SDK_TYPES__ContextConfigControl,
     A_SDK_TYPES__ContextConfigurations,
     A_SDK_TYPES__ContextConstructor,
     A_SDK_TYPES__IContextCredentials
@@ -26,11 +25,6 @@ export class A_SDK_ContextClass {
     protected CONFIG_SDK_VALIDATION: boolean = true
     protected CONFIG_VERBOSE: boolean = false;
     protected CONFIG_IGNORE_ERRORS: boolean = false;
-
-    protected CONFIG_CONTROL: A_SDK_TYPES__ContextConfigControl = {
-        inheritance: false,
-        processListeners: true
-    }
 
 
 
@@ -83,11 +77,6 @@ export class A_SDK_ContextClass {
                 : A_SDK_CONSTANTS__DEFAULT_ERRORS
         })
 
-        this.CONFIG_CONTROL = {
-            inheritance: params.control?.inheritance || this.CONFIG_CONTROL.inheritance,
-            processListeners: params.control?.processListeners || this.CONFIG_CONTROL.processListeners
-        }
-
         this.init();
     }
 
@@ -99,6 +88,12 @@ export class A_SDK_ContextClass {
             return this[property as string] as T;
 
         this.Errors.throw(A_SDK_CONSTANTS__ERROR_CODES.CONFIGURATION_PROPERTY_NOT_EXISTS_OR_NOT_ALLOWED_TO_READ)
+    }
+
+    hasInherited(cl: { new(...args: any[]) }): boolean {
+        return this.constructor === cl
+            ? false
+            : true
     }
 
 
@@ -149,9 +144,7 @@ export class A_SDK_ContextClass {
         });
 
         // global logger configuration
-        if (this.environment === 'server'
-            && this.CONFIG_CONTROL.processListeners
-        ) {
+        if (this.environment === 'server') {
             // eslint-disable-next-line no-use-before-define
             process.on('uncaughtException', (error) => {
                 // log only in case of A_AUTH_Error
@@ -211,7 +204,7 @@ export class A_SDK_ContextClass {
             this.CLIENT_SECRET = config.variables.client_secret || this.CLIENT_SECRET;
         }
 
-        if (!this.CONFIG_CONTROL.inheritance)
+        if (this.hasInherited(A_SDK_ContextClass))
             this.Logger.log('Configurations loaded from manual configuration.');
 
         /**
@@ -245,8 +238,7 @@ export class A_SDK_ContextClass {
 
         await this.loadExtendedConfigurationsFromEnvironment();
 
-        if (!this.CONFIG_CONTROL.inheritance)
-            this.Logger.log('Configurations loaded from environment variables.');
+        this.Logger.log('Configurations loaded from environment variables.');
     }
 
 
@@ -267,8 +259,7 @@ export class A_SDK_ContextClass {
 
             await this.loadExtendedConfigurationsFromFile(config);
 
-            if (!this.CONFIG_CONTROL.inheritance)
-                this.Logger.log('Configurations loaded from file.');
+            this.Logger.log('Configurations loaded from file.');
         } catch (error) {
             this.Logger.error(error);
         }
