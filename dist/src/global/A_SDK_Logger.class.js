@@ -18,8 +18,8 @@ class A_SDK_DefaultLogger {
             white: '37',
             pink: '95',
         };
-        this.verbose = params.verbose || this.verbose;
-        this.ignoreErrors = params.ignoreErrors || this.ignoreErrors;
+        this.verbose = params.verbose === true || params.verbose === false ? params.verbose : this.verbose;
+        this.ignoreErrors = params.ignoreErrors === true || params.ignoreErrors === false ? params.ignoreErrors : this.ignoreErrors;
         this.namespace = params.namespace || this.namespace;
     }
     // protected getTerminalWidth ()  {

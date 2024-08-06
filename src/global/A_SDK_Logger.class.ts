@@ -10,8 +10,8 @@ export class A_SDK_DefaultLogger {
     constructor(
         params: Partial<A_SDK_TYPES__LoggerConstructor>
     ) {
-        this.verbose = params.verbose || this.verbose;
-        this.ignoreErrors = params.ignoreErrors || this.ignoreErrors;
+        this.verbose = params.verbose === true  || params.verbose === false ? params.verbose : this.verbose;
+        this.ignoreErrors = params.ignoreErrors === true || params.ignoreErrors === false ? params.ignoreErrors : this.ignoreErrors; 
         this.namespace = params.namespace || this.namespace;
     }
 

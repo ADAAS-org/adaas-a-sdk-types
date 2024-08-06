@@ -8,6 +8,10 @@ import rl from 'readline';
 
     await A_SDK_Context.ready;
 
+    A_SDK_Context.configure({
+        verbose: true
+    })
+
     A_SDK_Context.Logger.log('Test Log', {
         test: 'test',
         test2: 'test2',
