@@ -234,7 +234,7 @@ export class A_SDK_CommonHelper {
         return str
             .replace(/([a-z])([A-Z])/g, '$1_$2')  // Handle lowercase followed by uppercase
             .replace(/[-\s]([A-Z])/g, '_$1')      // Handle non-alphabetical followed by uppercase
-            .replace('-','_')
+            .replace('-', '_')
             .toUpperCase();
     }
 
@@ -351,14 +351,22 @@ export class A_SDK_CommonHelper {
         if (target instanceof Object) {
             const clone = {} as T;
             for (const key in target) {
-                if (source[key])
+                if (
+                    source[key] !== null
+                    &&
+                    source[key] !== undefined
+                )
                     clone[key] = this.deepCloneAndMerge(target[key as any], source[key]);
                 else
                     clone[key as any] = this.deepClone(target[key]);
             }
 
             for (const key in source) {
-                if (target[key])
+                if (
+                    target[key] !== undefined
+                    &&
+                    target[key] !== null
+                )
                     clone[key] = this.deepCloneAndMerge(target[key], source[key]);
                 else
                     clone[key] = this.deepClone(source[key]);

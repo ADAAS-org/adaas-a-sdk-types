@@ -219,13 +219,17 @@ class A_SDK_CommonHelper {
         if (target instanceof Object) {
             const clone = {};
             for (const key in target) {
-                if (source[key])
+                if (source[key] !== null
+                    &&
+                        source[key] !== undefined)
                     clone[key] = this.deepCloneAndMerge(target[key], source[key]);
                 else
                     clone[key] = this.deepClone(target[key]);
             }
             for (const key in source) {
-                if (target[key])
+                if (target[key] !== undefined
+                    &&
+                        target[key] !== null)
                     clone[key] = this.deepCloneAndMerge(target[key], source[key]);
                 else
                     clone[key] = this.deepClone(source[key]);

@@ -110,6 +110,9 @@ describe('CommonHelper Tests', () => {
             c: {
                 d: string
             },
+            bool:{
+                a: boolean
+            },
             f: (name: string) => string
             s: Date
         }
@@ -120,6 +123,9 @@ describe('CommonHelper Tests', () => {
             c: {
                 d: 'd'
             },
+            bool:{
+                a: true
+            },
             f: (name: string) => { return name },
             s: new Date()
         }
@@ -127,6 +133,12 @@ describe('CommonHelper Tests', () => {
         const t2: any = {
             e: 'foo',
             b: 'bb',
+            c:{
+                d: 'ddd'
+            },
+            bool:{
+                a: false
+            },
             some: {
                 d: 'dd'
             },
@@ -138,7 +150,8 @@ describe('CommonHelper Tests', () => {
 
         expect(merged.a).toBe('a');
         expect(merged.b).toBe('bb');
-        expect(merged.c.d).toBe('d');
+        expect(merged.c.d).toBe('ddd');
+        expect(merged.bool.a).toBe(false);
         expect((merged as any).e).toBe('foo');
         expect((merged as any).some.d).toBe('dd');
         expect(merged.f('names')).toBe('names');
