@@ -1,6 +1,6 @@
 {
   "name": "@adaas/a-sdk-types",
-  "version": "0.0.58",
+  "version": "0.0.59",
   "description": "The main sdk that contains of connectors to many ADAAS services for simple manipulations across major entities",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
