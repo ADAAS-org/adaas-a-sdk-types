@@ -36,7 +36,8 @@ exports.A_SDK_Polyfills = void 0;
 class A_SDK_PolyfillsClass {
     constructor() {
         // eslint-disable-next-line no-use-before-define
-        this.moduleName = 'fs';
+        this.fsName = 'fs';
+        this.cryptoName = 'crypto';
     }
     fs() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -44,6 +45,14 @@ class A_SDK_PolyfillsClass {
                 yield this.init();
             }
             return this._fs;
+        });
+    }
+    crypto() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this._crypto) {
+                yield this.init();
+            }
+            return this._crypto;
         });
     }
     get env() {
@@ -61,23 +70,54 @@ class A_SDK_PolyfillsClass {
             try {
                 if (this.env === 'server') {
                     // eslint-disable-next-line no-use-before-define
-                    this._fs = (yield Promise.resolve(`${'' + this.moduleName}`).then(s => __importStar(require(s))));
+                    this._fs = (yield Promise.resolve(`${'' + this.fsName}`).then(s => __importStar(require(s))));
+                    // eslint-disable-next-line no-use-before-define
+                    this._crypto = {
+                        createTextHash: () => Promise.resolve(''),
+                        createFileHash: (filePath, algorithm = 'sha384') => new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                            try {
+                                const crypto = yield Promise.resolve(`${'' + this.cryptoName}`).then(s => __importStar(require(s)));
+                                const hash = crypto.createHash(algorithm);
+                                const fileStream = this._fs.createReadStream(filePath);
+                                fileStream.on('data', (data) => hash.update(data));
+                                fileStream.on('end', () => resolve(`${algorithm}-${hash.digest('base64')}`));
+                                fileStream.on('error', (err) => reject(err));
+                            }
+                            catch (error) {
+                                return reject(error);
+                            }
+                        }))
+                    };
                 }
                 else {
-                    this._fs = {
-                        readFileSync: (path, encoding) => '',
-                        existsSync: (path) => false
-                    };
+                    throw new Error('Not Server Environment');
                 }
             }
             catch (error) {
                 this._fs = {
                     readFileSync: (path, encoding) => '',
-                    existsSync: (path) => false
+                    existsSync: (path) => false,
+                    createReadStream: (path) => ''
+                };
+                this._crypto = {
+                    createFileHash: () => Promise.resolve(''),
+                    createTextHash: (text, algorithm = 'SHA-384') => new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                        try {
+                            const encoder = new TextEncoder();
+                            const data = encoder.encode(text);
+                            const hashBuffer = yield crypto.subtle.digest(algorithm, data);
+                            const hashArray = Array.from(new Uint8Array(hashBuffer));
+                            const hashBase64 = btoa(String.fromCharCode(...hashArray.map(byte => String.fromCharCode(byte))));
+                            return resolve(`${algorithm}-${hashBase64}`);
+                        }
+                        catch (error) {
+                            return reject(error);
+                        }
+                    }))
                 };
             }
         });
     }
 }
 exports.A_SDK_Polyfills = new A_SDK_PolyfillsClass();
-//# sourceMappingURL=Lib.polyfill.js.map
+//# sourceMappingURL=A_SDK_Polyfills.js.map

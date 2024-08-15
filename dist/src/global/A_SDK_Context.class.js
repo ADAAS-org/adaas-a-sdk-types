@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.A_SDK_Context = exports.A_SDK_ContextClass = void 0;
 const A_SDK_Logger_class_1 = require("./A_SDK_Logger.class");
-const Lib_polyfill_1 = require("../lib/Lib.polyfill");
+const A_SDK_Polyfills_1 = require("../lib/A_SDK_Polyfills");
 const A_SDK_Error_class_1 = require("./A_SDK_Error.class");
 const Common_helper_1 = require("../helpers/Common.helper");
 const A_SDK_ErrorsProvider_class_1 = require("./A_SDK_ErrorsProvider.class");
@@ -125,7 +125,7 @@ class A_SDK_ContextClass {
         return this.CONFIG_SDK_VALIDATION;
     }
     get environment() {
-        return Lib_polyfill_1.LibPolyfill.env;
+        return A_SDK_Polyfills_1.A_SDK_Polyfills.env;
     }
     getConfigurationProperty_ENV_Alias(property) {
         return `${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(this.namespace)}_${Common_helper_1.A_SDK_CommonHelper.toUpperSnakeCase(property)}`;
@@ -164,7 +164,7 @@ class A_SDK_ContextClass {
     }
     loadConfigurations() {
         return __awaiter(this, void 0, void 0, function* () {
-            const fs = yield Lib_polyfill_1.LibPolyfill.fs();
+            const fs = yield A_SDK_Polyfills_1.A_SDK_Polyfills.fs();
             if (this.environment === 'server') {
                 yield this.loadConfigurationsFromEnvironment();
             }
@@ -186,7 +186,7 @@ class A_SDK_ContextClass {
     }
     loadConfigurationsFromFile() {
         return __awaiter(this, void 0, void 0, function* () {
-            const fs = yield Lib_polyfill_1.LibPolyfill.fs();
+            const fs = yield A_SDK_Polyfills_1.A_SDK_Polyfills.fs();
             try {
                 const data = fs.readFileSync(`${this.namespace}.conf.json`, 'utf8');
                 const config = JSON.parse(data);

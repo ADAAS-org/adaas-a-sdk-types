@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.A_SDK_Context = exports.A_SDK_ContextClass = exports.A_SDK_DefaultLogger = exports.A_SDK_CONSTANTS__ERROR_CODES = exports.A_Entity = exports.A_SDK_Error = exports.A_SDK_ErrorsProvider = exports.A_SDK_ServerError = exports.A_SDK_CommonHelper = void 0;
+exports.A_SDK_Polyfills = exports.A_SDK_Context = exports.A_SDK_ContextClass = exports.A_SDK_DefaultLogger = exports.A_SDK_CONSTANTS__ERROR_CODES = exports.A_Entity = exports.A_SDK_Error = exports.A_SDK_ErrorsProvider = exports.A_SDK_ServerError = exports.A_SDK_CommonHelper = void 0;
 var Common_helper_1 = require("./src/helpers/Common.helper");
 Object.defineProperty(exports, "A_SDK_CommonHelper", { enumerable: true, get: function () { return Common_helper_1.A_SDK_CommonHelper; } });
 var A_SDK_ServerError_class_1 = require("./src/global/A_SDK_ServerError.class");
@@ -18,4 +18,6 @@ Object.defineProperty(exports, "A_SDK_DefaultLogger", { enumerable: true, get: f
 var A_SDK_Context_class_1 = require("./src/global/A_SDK_Context.class");
 Object.defineProperty(exports, "A_SDK_ContextClass", { enumerable: true, get: function () { return A_SDK_Context_class_1.A_SDK_ContextClass; } });
 Object.defineProperty(exports, "A_SDK_Context", { enumerable: true, get: function () { return A_SDK_Context_class_1.A_SDK_Context; } });
+var A_SDK_Polyfills_1 = require("./src/lib/A_SDK_Polyfills");
+Object.defineProperty(exports, "A_SDK_Polyfills", { enumerable: true, get: function () { return A_SDK_Polyfills_1.A_SDK_Polyfills; } });
 //# sourceMappingURL=index.js.map

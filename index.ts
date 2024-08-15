@@ -39,6 +39,10 @@ export {
 } from './src/global/A_SDK_Context.class';
 
 export {
+    A_SDK_Polyfills
+} from './src/lib/A_SDK_Polyfills'
+
+export {
     A_SDK_TYPES__ContextConfigurations,
     A_SDK_TYPES__ContextConstructor,
     A_SDK_TYPES__IContextCredentials

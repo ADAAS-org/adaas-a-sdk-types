@@ -1,5 +1,5 @@
 import { A_SDK_DefaultLogger } from "./A_SDK_Logger.class";
-import { LibPolyfill } from '../lib/Lib.polyfill'
+import { A_SDK_Polyfills } from '../lib/A_SDK_Polyfills'
 import { A_SDK_Error } from "./A_SDK_Error.class";
 import {
     A_SDK_TYPES__ContextConfigurations,
@@ -172,7 +172,7 @@ export class A_SDK_ContextClass {
     }
 
     get environment(): 'server' | 'browser' {
-        return LibPolyfill.env;
+        return A_SDK_Polyfills.env;
     }
 
     protected getConfigurationProperty_ENV_Alias(property: string): string {
@@ -220,7 +220,7 @@ export class A_SDK_ContextClass {
 
 
     private async loadConfigurations(): Promise<void> {
-        const fs = await LibPolyfill.fs();
+        const fs = await A_SDK_Polyfills.fs();
 
         if (this.environment === 'server') {
             await this.loadConfigurationsFromEnvironment();
@@ -249,7 +249,7 @@ export class A_SDK_ContextClass {
 
 
     private async loadConfigurationsFromFile() {
-        const fs = await LibPolyfill.fs();
+        const fs = await A_SDK_Polyfills.fs();
         try {
             const data = fs.readFileSync(`${this.namespace}.conf.json`, 'utf8');
 
