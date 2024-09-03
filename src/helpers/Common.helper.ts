@@ -162,7 +162,7 @@ export class A_SDK_CommonHelper {
             ? this.isASEID(props.namespace)
                 ? this.parseASEID(props.namespace).id
                 : props.namespace
-            : process.env.ADAAS_NAMESPACE;
+            : process.env.A_SDK_NAMESPACE;
 
         const scope = typeof props.scope === 'number'
             ? this.formatWithLeadingZeros(props.scope) :
@@ -178,7 +178,7 @@ export class A_SDK_CommonHelper {
 
         const version = props.version;
 
-        const shard = config?.noShard ? undefined : process.env.ADAAS_APP_SHARD;
+        const shard = config?.noShard ? undefined : (process.env.ADAAS_APP_SHARD || process.env.A_SDK_SHARD);
 
 
         return `${namespace}@${scope}:${entity}:${shard ? (shard + '--' + id) : id}${version ? ('@' + version) : ''}`

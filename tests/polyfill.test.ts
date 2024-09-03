@@ -29,6 +29,8 @@ describe('Polyfill Tests', () => {
         const hash = await crypto.createFileHash('./index.ts', 'sha-256');
 
         console.log('hash: ', hash)
+
+        
     });
 
 

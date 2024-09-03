@@ -57,7 +57,10 @@ export class A_SDK_ContextClass {
 
         this.namespace = params.namespace
             ? params.namespace
-            : (process.env.ADAAS_NAMESPACE || process.env.ADAAS_APP_NAMESPACE || 'a-sdk');
+            : (process.env.ADAAS_NAMESPACE
+                || process.env.A_SDK_NAMESPACE
+                || process.env.ADAAS_APP_NAMESPACE
+                || 'a-sdk');
 
         this.Logger = new A_SDK_DefaultLogger({
             namespace: this.namespace

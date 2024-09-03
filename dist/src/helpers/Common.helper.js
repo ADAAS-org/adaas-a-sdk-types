@@ -88,7 +88,7 @@ class A_SDK_CommonHelper {
             ? this.isASEID(props.namespace)
                 ? this.parseASEID(props.namespace).id
                 : props.namespace
-            : process.env.ADAAS_NAMESPACE;
+            : process.env.A_SDK_NAMESPACE;
         const scope = typeof props.scope === 'number'
             ? this.formatWithLeadingZeros(props.scope) :
             this.isASEID(props.scope)
@@ -99,7 +99,7 @@ class A_SDK_CommonHelper {
             ? this.formatWithLeadingZeros(props.id)
             : props.id;
         const version = props.version;
-        const shard = (config === null || config === void 0 ? void 0 : config.noShard) ? undefined : process.env.ADAAS_APP_SHARD;
+        const shard = (config === null || config === void 0 ? void 0 : config.noShard) ? undefined : (process.env.ADAAS_APP_SHARD || process.env.A_SDK_SHARD);
         return `${namespace}@${scope}:${entity}:${shard ? (shard + '--' + id) : id}${version ? ('@' + version) : ''}`;
     }
     /**
