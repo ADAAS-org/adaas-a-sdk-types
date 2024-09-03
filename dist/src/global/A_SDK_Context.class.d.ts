@@ -32,6 +32,11 @@ export declare class A_SDK_ContextClass {
      * Initializes the SDK or can be used to reinitialize the SDK
      */
     init(): Promise<void>;
+    /**
+     * This method helps to provide additional modules that should be awaited before context is ready.
+     * [!] Please avoid circular dependencies
+     */
+    protected awaitNestedDependencies(): Promise<void>;
     protected defaultInit(): void;
     get verbose(): boolean;
     get ignoreErrors(): boolean;

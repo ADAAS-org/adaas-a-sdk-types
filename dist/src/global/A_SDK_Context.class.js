@@ -72,6 +72,7 @@ class A_SDK_ContextClass {
                 this.ready = new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                     try {
                         yield this.loadConfigurations();
+                        yield this.awaitNestedDependencies();
                         this.defaultInit();
                         return resolve();
                     }
@@ -84,6 +85,15 @@ class A_SDK_ContextClass {
                 }));
             else
                 yield this.ready;
+        });
+    }
+    /**
+     * This method helps to provide additional modules that should be awaited before context is ready.
+     * [!] Please avoid circular dependencies
+     */
+    awaitNestedDependencies() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return;
         });
     }
     defaultInit() {

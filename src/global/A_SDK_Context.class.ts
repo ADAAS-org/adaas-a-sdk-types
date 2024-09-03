@@ -109,6 +109,8 @@ export class A_SDK_ContextClass {
                 try {
                     await this.loadConfigurations();
 
+                    await this.awaitNestedDependencies();
+
                     this.defaultInit();
 
                     return resolve();
@@ -121,6 +123,15 @@ export class A_SDK_ContextClass {
             });
         else
             await this.ready;
+    }
+
+
+    /**
+     * This method helps to provide additional modules that should be awaited before context is ready. 
+     * [!] Please avoid circular dependencies 
+     */
+    protected async awaitNestedDependencies(): Promise<void> {
+        return
     }
 
 
